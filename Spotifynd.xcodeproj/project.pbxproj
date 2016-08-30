@@ -14,7 +14,12 @@
 		FB0C643F1D70BDEF00C409AB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB0C643D1D70BDEF00C409AB /* LaunchScreen.storyboard */; };
 		FB0C64471D70BEF100C409AB /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C64461D70BEF100C409AB /* AVFoundation.framework */; };
 		FB0C64491D70BF0A00C409AB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C64481D70BF0A00C409AB /* SystemConfiguration.framework */; };
-		FB0C644B1D70C05300C409AB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C644A1D70C05300C409AB /* Spotify.framework */; };
+		FB0C64511D70F4E600C409AB /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64501D70F4E600C409AB /* AuthViewController.swift */; };
+		FB0C64531D73289B00C409AB /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64521D73289B00C409AB /* HomeScreenViewController.swift */; };
+		FB0C64551D747F6300C409AB /* SearchResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64541D747F6300C409AB /* SearchResultsTableViewController.swift */; };
+		FB0C647A1D74AA6000C409AB /* Auth&SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */; };
+		FB0C647C1D74B56F00C409AB /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */; };
+		FB0C647E1D75CCAE00C409AB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C647D1D75CCAE00C409AB /* Spotify.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,8 +32,13 @@
 		FB0C64401D70BDEF00C409AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB0C64461D70BEF100C409AB /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		FB0C64481D70BF0A00C409AB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		FB0C644A1D70C05300C409AB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		FB0C644C1D70C0EA00C409AB /* Spotifynd-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spotifynd-Bridging-Header.h"; sourceTree = "<group>"; };
+		FB0C64501D70F4E600C409AB /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		FB0C64521D73289B00C409AB /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
+		FB0C64541D747F6300C409AB /* SearchResultsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsTableViewController.swift; sourceTree = "<group>"; };
+		FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Auth&SearchController.swift"; sourceTree = "<group>"; };
+		FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		FB0C647D1D75CCAE00C409AB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB0C64491D70BF0A00C409AB /* SystemConfiguration.framework in Frameworks */,
-				FB0C644B1D70C05300C409AB /* Spotify.framework in Frameworks */,
+				FB0C647E1D75CCAE00C409AB /* Spotify.framework in Frameworks */,
 				FB0C64471D70BEF100C409AB /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,7 +60,7 @@
 			children = (
 				FB0C64481D70BF0A00C409AB /* SystemConfiguration.framework */,
 				FB0C64461D70BEF100C409AB /* AVFoundation.framework */,
-				FB0C644A1D70C05300C409AB /* Spotify.framework */,
+				FB0C647D1D75CCAE00C409AB /* Spotify.framework */,
 				FB0C64331D70BDEF00C409AB /* Spotifynd */,
 				FB0C64321D70BDEF00C409AB /* Products */,
 			);
@@ -70,6 +80,11 @@
 				FB0C644C1D70C0EA00C409AB /* Spotifynd-Bridging-Header.h */,
 				FB0C64341D70BDEF00C409AB /* AppDelegate.swift */,
 				FB0C64361D70BDEF00C409AB /* ViewController.swift */,
+				FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */,
+				FB0C64501D70F4E600C409AB /* AuthViewController.swift */,
+				FB0C64521D73289B00C409AB /* HomeScreenViewController.swift */,
+				FB0C64541D747F6300C409AB /* SearchResultsTableViewController.swift */,
+				FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */,
 				FB0C64381D70BDEF00C409AB /* Main.storyboard */,
 				FB0C643B1D70BDEF00C409AB /* Assets.xcassets */,
 				FB0C643D1D70BDEF00C409AB /* LaunchScreen.storyboard */,
@@ -149,7 +164,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB0C647A1D74AA6000C409AB /* Auth&SearchController.swift in Sources */,
 				FB0C64371D70BDEF00C409AB /* ViewController.swift in Sources */,
+				FB0C64531D73289B00C409AB /* HomeScreenViewController.swift in Sources */,
+				FB0C647C1D74B56F00C409AB /* PlayerViewController.swift in Sources */,
+				FB0C64551D747F6300C409AB /* SearchResultsTableViewController.swift in Sources */,
+				FB0C64511D70F4E600C409AB /* AuthViewController.swift in Sources */,
 				FB0C64351D70BDEF00C409AB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +335,7 @@
 				FB0C64451D70BDEF00C409AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
