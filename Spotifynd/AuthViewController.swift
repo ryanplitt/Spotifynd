@@ -14,8 +14,6 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         super.viewDidLoad()
     }
     
-    static var session: SPTSession?
-    
     @IBAction func logginWithSpotifyButtonTapped(sender: AnyObject) {
         showSpotifyAuthViewController()
     }
@@ -40,7 +38,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     }
     
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
-        AuthViewController.session = session
+        AuthController.session = session
         AuthController.authToken = session.accessToken
         dispatch_async(dispatch_get_main_queue()) { 
             self.performSegueWithIdentifier("toHomeScreen", sender: self)

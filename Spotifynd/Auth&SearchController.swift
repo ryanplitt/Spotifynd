@@ -10,10 +10,8 @@ import Foundation
 
 class AuthController {
     
+    static var session: SPTSession?
     static var authToken: String?
-    
-    // THIS IS WHERE I"M PUTTING IN THE MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
 }
 
 class SearchController {
@@ -29,7 +27,7 @@ class SearchController {
     }
     
     static func searchForArtist(name: String, completion: () -> Void){
-        SPTSearch.performSearchWithQuery(name, queryType: .QueryTypeArtist, accessToken: AuthViewController.session?.accessToken) { (error, list) in
+        SPTSearch.performSearchWithQuery(name, queryType: .QueryTypeArtist, accessToken: AuthController.authToken) { (error, list) in
             if error != nil {
                 print(error.localizedDescription)
                 completion()
@@ -50,7 +48,7 @@ class SearchController {
             var listPage = SPTListPage?()
             var request: NSURLRequest?
             do {
-                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: AuthController.authToken, httpMethod: "GET", values: ["time_range":range, "limit":50], valueBodyIsJSON: true, sendDataAsQueryString: true)
+                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: AuthController.authToken, httpMethod: "GET", values: ["time_range":range, "limit":20], valueBodyIsJSON: true, sendDataAsQueryString: true)
             } catch {
                 print("error getting request")
             }

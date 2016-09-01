@@ -25,7 +25,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         SearchController.sharedController.getUsersTopArtistsForHomeScreen("long_term")
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
-        guard AuthViewController.session != nil else {
+        guard AuthController.session != nil else {
             let authVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("authVC")
             let topVC = UIApplication.sharedApplication().keyWindow?.rootViewController
             guard let topViewC = topVC else {
