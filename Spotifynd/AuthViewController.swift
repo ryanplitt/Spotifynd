@@ -23,7 +23,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     func showSpotifyAuthViewController() {
         SPTAuth.defaultInstance().clientID = "bbd379abea604abca005f4eca064d395"
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "spotifynd://callback")
-        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, "user-top-read"]
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
         
         let windowAuthVC = SPTAuthViewController.authenticationViewController()
         windowAuthVC.delegate = self

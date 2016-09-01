@@ -87,4 +87,17 @@ class QueueController {
     }
     
     
+    func createSpotifyPlaylistFromQueueArray() {
+        SPTPlaylistList.createPlaylistWithName("Spotifynd", publicFlag: false, session: AuthViewController.session) { (error, playlistSnapshot) in
+            if error != nil {
+                print("There was an error making the playlist")
+            }
+            playlistSnapshot.addTracksToPlaylist(self.queue, withAccessToken: AuthController.authToken, callback: { (error) in
+                if error != nil {
+                    print("There was an error adding the tracks to the new playlist")
+                }
+            })
+        }
+        
+    }
 }
