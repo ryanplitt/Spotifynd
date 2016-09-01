@@ -20,6 +20,7 @@
 		FB0C647A1D74AA6000C409AB /* Auth&SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */; };
 		FB0C647C1D74B56F00C409AB /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */; };
 		FB0C647E1D75CCAE00C409AB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C647D1D75CCAE00C409AB /* Spotify.framework */; };
+		FB0C64EA1D775B8C00C409AB /* QueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64E91D775B8C00C409AB /* QueueController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Auth&SearchController.swift"; sourceTree = "<group>"; };
 		FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		FB0C647D1D75CCAE00C409AB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
+		FB0C64E91D775B8C00C409AB /* QueueController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 				FB0C64341D70BDEF00C409AB /* AppDelegate.swift */,
 				FB0C64361D70BDEF00C409AB /* ViewController.swift */,
 				FB0C64791D74AA6000C409AB /* Auth&SearchController.swift */,
+				FB0C64E91D775B8C00C409AB /* QueueController.swift */,
 				FB0C64501D70F4E600C409AB /* AuthViewController.swift */,
 				FB0C64521D73289B00C409AB /* HomeScreenViewController.swift */,
 				FB0C64541D747F6300C409AB /* SearchResultsTableViewController.swift */,
@@ -165,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB0C647A1D74AA6000C409AB /* Auth&SearchController.swift in Sources */,
+				FB0C64EA1D775B8C00C409AB /* QueueController.swift in Sources */,
 				FB0C64371D70BDEF00C409AB /* ViewController.swift in Sources */,
 				FB0C64531D73289B00C409AB /* HomeScreenViewController.swift in Sources */,
 				FB0C647C1D74B56F00C409AB /* PlayerViewController.swift in Sources */,

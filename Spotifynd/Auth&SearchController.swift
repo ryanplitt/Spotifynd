@@ -11,12 +11,16 @@ import Foundation
 class AuthController {
     
     static var authToken: String?
+    
+    // THIS IS WHERE I"M PUTTING IN THE MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 }
 
 class SearchController {
     
     static let sharedController = SearchController()
     
+    static var transferedResult: SPTPartialArtist = SPTPartialArtist()
     static var results: [SPTPartialArtist] = []
     static var topArtists: [SPTArtist] = [] {
         didSet{
@@ -39,14 +43,14 @@ class SearchController {
         }
     }
     
-    func getUsersTopArtistsForHomeScreen(){
+    func getUsersTopArtistsForHomeScreen(range: String){
         dispatch_async(dispatch_get_main_queue()) {
             var responseResponse: NSURLResponse?
             var responseData: NSData?
             var listPage = SPTListPage?()
             var request: NSURLRequest?
             do {
-                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: AuthController.authToken, httpMethod: "GET", values: nil, valueBodyIsJSON: true, sendDataAsQueryString: true)
+                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: AuthController.authToken, httpMethod: "GET", values: ["time_range":range, "limit":50], valueBodyIsJSON: true, sendDataAsQueryString: true)
             } catch {
                 print("error getting request")
             }

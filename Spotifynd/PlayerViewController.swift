@@ -8,42 +8,35 @@
 
 import UIKit
 
-class PlayerViewController: UIViewController, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
+class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     var player: SPTAudioStreamingController?
     
-
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var albumImage: UIImageView!
+    @IBOutlet weak var playPauseButton: UIButton!
+    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         player = SPTAudioStreamingController.sharedInstance()
         player?.delegate = self
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(AuthController.authToken)
-        }
-
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
-        player?.playSpotifyURI("spotify:track:4jDmJ51x1o9NZB5Nxxc7gY", startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
-            if error != nil {
-                print("There was an error playing the track. \(error.localizedDescription)")
-            }
-            self.player?.queueSpotifyURI("spotify:track:7kJlTKjNZVT26iwiDUVhRm", callback: { (error) in
+        if !QueueController.sharedController.queue.isEmpty {
+            player?.playSpotifyURI(QueueController.sharedController.queue[0].uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
                 if error != nil {
-                    print(error.localizedDescription)
+                    print("Error")
                 }
             })
-        })
+        }
     }
     @IBAction func pauseButtonTapped(sender: AnyObject) {
         player?.setIsPlaying(!(player?.playbackState.isPlaying)!, callback: { (error) in
@@ -61,16 +54,41 @@ class PlayerViewController: UIViewController, SPTAudioStreamingDelegate, SPTAudi
         })
     }
     
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func updateTableView(){
+        tableView.reloadData()
     }
-    */
-
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return QueueController.sharedController.queue.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("queueCell", forIndexPath: indexPath)
+        
+        cell.textLabel?.text = QueueController.sharedController.queue[indexPath.row].name
+        cell.detailTextLabel?.text = QueueController.sharedController.queue[indexPath.row].artists.first!.name!
+        
+        return cell
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        if isPlaying {
+            playPauseButton.setTitle("Pause", forState: .Normal)
+        }
+        if !isPlaying {
+            playPauseButton.setTitle("Play", forState: .Normal)
+        }
+    }
+    
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

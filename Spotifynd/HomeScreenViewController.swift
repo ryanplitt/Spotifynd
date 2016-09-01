@@ -10,12 +10,19 @@ import UIKit
 
 class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
     
+    
+    @IBOutlet weak var topArtistRangeSelectorView: UIView!
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
-
+    
+    @IBOutlet weak var topArtistsRangeSegmentedController: UISegmentedControl!
     override func viewDidLoad() {
         super.viewDidLoad()
-        SearchController.sharedController.getUsersTopArtistsForHomeScreen()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        SearchController.sharedController.getUsersTopArtistsForHomeScreen("long_term")
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
         guard AuthViewController.session != nil else {
@@ -28,19 +35,20 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             topViewC.presentViewController(authVC, animated: true, completion: nil)
             return
         }
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
     }
-
+    
     func setupSearchController(){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let resultsController = storyboard.instantiateViewControllerWithIdentifier("resultsVC")
+        let resultsController = storyboard.instantiateViewControllerWithIdentifier("resultsVC") as! SearchResultsTableViewController
         
         searchController = UISearchController(searchResultsController: resultsController)
         
         guard let searchController = searchController else {return}
         
+        resultsController.searchResultsView = self
+        
         searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = true
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.placeholder = "Search for an Artist"
         searchController.definesPresentationContext = true
     }
@@ -55,6 +63,11 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             })
             
         }
+    }
+    @IBAction func artistsRangeSegmentValueChanged(sender: AnyObject) {
+        let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
+        SearchController.topArtists = []
+        SearchController.sharedController.getUsersTopArtistsForHomeScreen(topAritstRangeDict[topArtistsRangeSegmentedController.selectedSegmentIndex]!)
     }
     
     func updateTableView() {
@@ -82,14 +95,24 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     
+        if segue.identifier == "fromTopArtistCell" {
+            guard let indexPath = tableView.indexPathForSelectedRow else {return}
+            let artist = SearchController.topArtists[indexPath.row]
+            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString)
+        }
+        
+        if segue.identifier == "fromSearch" {
+            guard SearchController.transferedResult.name.characters.count > 0 else {
+                print("There was no artist to transfer")
+                return
+            }
+            QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString)
+            SearchController.transferedResult = SPTPartialArtist()
+        }
+     }
 }
