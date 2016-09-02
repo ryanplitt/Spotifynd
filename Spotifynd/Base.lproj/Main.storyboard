@@ -224,29 +224,47 @@
                                     <constraint firstAttribute="height" constant="341" id="24F-Ez-7z9"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="queueCell" textLabel="TTd-ge-Han" detailTextLabel="Gum-Y9-XOZ" style="IBUITableViewCellStyleSubtitle" id="HFL-F7-ClO">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="queueCell" id="HFL-F7-ClO" customClass="QueueTableViewCell" customModule="Spotifynd" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="359" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HFL-F7-ClO" id="V1X-He-H0r">
-                                            <rect key="frame" x="0.0" y="0.0" width="359" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="359" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TTd-ge-Han">
-                                                    <rect key="frame" x="15" y="6" width="31.5" height="19.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="4" verticalHuggingPriority="251" misplaced="YES" image="nowPlaying" translatesAutoresizingMaskIntoConstraints="NO" id="G3g-Of-Dlu">
+                                                    <rect key="frame" x="316" y="5" width="35" height="34"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="35" id="3bn-H3-TCM"/>
+                                                        <constraint firstAttribute="width" constant="35" id="nKm-ly-3k1"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R9w-4p-7Ae">
+                                                    <rect key="frame" x="8" y="5" width="32" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Gum-Y9-XOZ">
-                                                    <rect key="frame" x="15" y="25.5" width="40.5" height="13.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQh-TB-UPM">
+                                                    <rect key="frame" x="8" y="25" width="41" height="14"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="G3g-Of-Dlu" firstAttribute="centerY" secondItem="V1X-He-H0r" secondAttribute="centerY" id="HVx-gw-hSx"/>
+                                                <constraint firstItem="G3g-Of-Dlu" firstAttribute="trailing" secondItem="V1X-He-H0r" secondAttribute="trailingMargin" id="QYT-h7-ad0"/>
+                                                <constraint firstItem="VQh-TB-UPM" firstAttribute="top" secondItem="R9w-4p-7Ae" secondAttribute="bottom" id="Rmp-ng-iAb"/>
+                                                <constraint firstItem="R9w-4p-7Ae" firstAttribute="leading" secondItem="V1X-He-H0r" secondAttribute="leadingMargin" id="TY8-Gz-tfw"/>
+                                                <constraint firstItem="VQh-TB-UPM" firstAttribute="bottom" secondItem="G3g-Of-Dlu" secondAttribute="bottom" id="deB-gp-BZD"/>
+                                                <constraint firstItem="R9w-4p-7Ae" firstAttribute="leading" secondItem="VQh-TB-UPM" secondAttribute="leading" id="zfW-NH-jgH"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="artistLabel" destination="VQh-TB-UPM" id="bss-kw-P2d"/>
+                                            <outlet property="nowPlayingImage" destination="G3g-Of-Dlu" id="Ukk-pe-OoZ"/>
+                                            <outlet property="titleLable" destination="R9w-4p-7Ae" id="zPf-V2-ou0"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -365,6 +383,9 @@
             <point key="canvasLocation" x="304.5" y="1101.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="nowPlaying" width="26" height="26"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="pfS-YD-Czs"/>
     </inferredMetricsTieBreakers>

@@ -11,6 +11,7 @@ import UIKit
 class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     var player: SPTAudioStreamingController?
+    var indexOfCurrentSong: NSIndexPath?
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var albumImage: UIImageView!
@@ -79,6 +80,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 })
             }
         }
+        updateTableView()
+        guard let indexpath = self.indexOfCurrentSong else {return}
+        tableView.scrollToRowAtIndexPath(indexpath, atScrollPosition: .Bottom, animated: true)
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
@@ -125,11 +129,22 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("queueCell", forIndexPath: indexPath)
+        guard let cell = tableView.dequeueReusableCellWithIdentifier("queueCell", forIndexPath: indexPath) as? QueueTableViewCell else {return UITableViewCell()}
         
-        cell.textLabel?.text = QueueController.sharedController.queue[indexPath.row].name
-        cell.detailTextLabel?.text = QueueController.sharedController.queue[indexPath.row].artists.first!.name!
+        let song = QueueController.sharedController.queue[indexPath.row]
+        let title = song.name
+        let artist = song.artists.first!.name!
         
+        cell.updateCellWithTrack(title, artist: artist)
+        
+        if player?.metadata != nil {
+            if song.uri.absoluteString == player?.metadata.currentTrack?.uri {
+                self.indexOfCurrentSong = indexPath
+                cell.nowPlayingImage.hidden = false
+            } else {
+                cell.nowPlayingImage.hidden = true
+            }
+        }
         return cell
     }
     
