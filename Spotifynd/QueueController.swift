@@ -15,7 +15,6 @@ class QueueController {
     
     static let nsUserDefaultsURIKey = "uriKey"
     static let sharedController = QueueController()
-    var allPlaylistsArray: [SPTPartialPlaylist] = []
     
     var queue: [SPTTrack] = [] {
         didSet{
@@ -150,6 +149,26 @@ class QueueController {
             let playlistSnapshot = playlistSnapshotData as! SPTPlaylistSnapshot
             self.spotifyndPlaylist = playlistSnapshot
             completion()
+        }
+    }
+    
+    func getImageFromURL(imageURL: NSURL, completion: ((image: UIImage) -> Void)?){
+        let data = NSData(contentsOfURL: imageURL)
+        guard data != nil else {
+            print("There doesn't appear to be any image")
+            return
+        }
+        guard let image = UIImage(data: data!) else {
+            print("Could not transfer data into image")
+            return
+        }
+        completion?(image: image)
+    }
+    
+    func initializeFirstTrackForPlaying(player: SPTAudioStreamingController, completionFirstTrack: (SPTTrack) -> Void){
+        SPTTrack.trackWithURI(queue[0].uri, session: AuthController.session) { (error, trackData) in
+            let track = trackData as! SPTTrack
+            completionFirstTrack(track)
         }
     }
     

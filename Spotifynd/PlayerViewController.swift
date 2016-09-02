@@ -15,6 +15,10 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var albumImage: UIImageView!
     @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var artistLabel: UILabel!
     
     
     
@@ -24,34 +28,76 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         player = SPTAudioStreamingController.sharedInstance()
         player?.delegate = self
+        player?.playbackDelegate = self
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(AuthController.authToken)
         
     }
     
     override func viewDidAppear(animated: Bool) {
-        dispatch_async(dispatch_get_main_queue()) {
-            QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
+        QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
+            dispatch_async(dispatch_get_main_queue()) {
                 print("The operation has completed")
+            }
+        }
+        QueueController.sharedController.initializeFirstTrackForPlaying(player!) { (track) in
+            self.titleLabel.text = track.name
+            self.artistLabel.text = track.artists.first?.name
+            QueueController.sharedController.getImageFromURL(track.album.largestCover.imageURL, completion: { (image) in
+                self.albumImage.image = image
+            })
+            self.initializePlaylistForPlayback({
+                print(self.player?.playbackState)
+            })
+        }
+    }
+    
+    func initializePlaylistForPlayback(completion: () -> Void){
+        self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+            if error != nil {
+                print("There was an error preparing the playlist")
+            }
+            completion()
+        }
+    }
+    
+    func updateUI() {
+        if self.player?.metadata == nil || self.player?.metadata.currentTrack == nil {
+            //            self.albumImage.image = nil
+        } else {
+            
+            self.nextButton.enabled = self.player?.metadata.nextTrack != nil
+            self.backButton.enabled = self.player?.metadata.prevTrack != nil
+            self.titleLabel.text = self.player?.metadata.currentTrack?.name
+            self.artistLabel.text = self.player?.metadata.currentTrack?.artistName
+            
+            SPTTrack.trackWithURI(NSURL(string: (self.player?.metadata.currentTrack?.uri)!), session: AuthController.session) { (error, trackdata) in
+                let track = trackdata as! SPTTrack
+                let imageURL = track.album.largestCover.imageURL
+                QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
+                    self.albumImage.image = image
+                })
             }
         }
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
-        player?.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.playableUri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
-            if error != nil {
-                print("There was an error playing back the playlist")
+        dispatch_async(dispatch_get_main_queue()) {
+            if self.player?.playbackState == nil {
+                self.initializePlaylistForPlayback({ 
+                    self.player?.setIsPlaying(!(self.player?.playbackState.isPlaying)!, callback: { (error) in
+                        if error != nil {
+                            print("Could not change the playing/pausing state")
+                        }
+                        if ((self.player?.playbackState.isPlaying) != false) {
+                            self.playPauseButton.setTitle("Pause", forState: .Normal)
+                        } else {
+                            self.playPauseButton.setTitle("Play", forState: .Normal)
+                        }
+                    })
+                })
             }
-        })
-    }
-    @IBAction func pauseButtonTapped(sender: AnyObject) {
-        player?.setIsPlaying(!(player?.playbackState.isPlaying)!, callback: { (error) in
-            if error != nil {
-                print("There was an error pausing. Probably because the new stuff. See SPTPlaybackState vs SPTAudioController")
-            }
-            print(self.player?.playbackState.isRepeating)
-            print(self.player?.playbackState.isShuffling)
-        })
+        }
     }
     
     @IBAction func nextButtonTapped(sender: AnyObject) {
@@ -60,6 +106,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 print(error.localizedDescription)
             }
         })
+    }
+    
+    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
+        self.updateUI()
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
+        self.updateUI()
     }
     
     func updateTableView(){
@@ -79,10 +133,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
     
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
-        let image = metadata.currentTrack?.albumCoverArtUri
-        print(image)
-    }
+    
     
     
     /*
