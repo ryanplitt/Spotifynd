@@ -103,7 +103,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         if segue.identifier == "fromTopArtistCell" {
             guard let indexPath = tableView.indexPathForSelectedRow else {return}
             let artist = SearchController.topArtists[indexPath.row]
-            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString)
+            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: nil)
         }
         
         if segue.identifier == "fromSearch" {
@@ -111,7 +111,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                 print("There was no artist to transfer")
                 return
             }
-            QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString)
+            QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString, completion: nil)
             SearchController.transferedResult = SPTPartialArtist()
         }
      }

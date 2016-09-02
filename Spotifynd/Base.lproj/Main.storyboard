@@ -66,7 +66,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="artistCell" textLabel="vGr-UO-25u" style="IBUITableViewCellStyleDefault" id="xQg-GQ-lZ8">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xQg-GQ-lZ8" id="YNu-QN-8jf">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -179,7 +179,6 @@
         <!--Player View Controller-->
         <scene sceneID="vDG-mV-iIY">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fBw-Y1-IXM" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="kut-kA-W6B" customClass="PlayerViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="DUc-nX-Ub4"/>
@@ -273,6 +272,7 @@
                         <outlet property="tableView" destination="I1i-x6-Qz2" id="5Tq-mJ-UEJ"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fBw-Y1-IXM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1478.5" y="1067.5"/>
         </scene>

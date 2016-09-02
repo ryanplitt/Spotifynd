@@ -11,10 +11,9 @@ import Foundation
 
 class QueueController {
     
+    var spotifyndPlaylist: SPTPlaylistSnapshot?
     
-    var spotifyndPlaylist: SPTPlaylistSnapshot
-    
-    let nsUserDefaultsURIKey = "uriKey"
+    static let nsUserDefaultsURIKey = "uriKey"
     static let sharedController = QueueController()
     var allPlaylistsArray: [SPTPartialPlaylist] = []
     
@@ -73,20 +72,32 @@ class QueueController {
         }
     }
     
-    func setQueueFromArtist(artistURI: String){
-        let queuingSongs = dispatch_group_create()
-        dispatch_group_enter(queuingSongs)
+    func setQueueFromArtist(artistURI: String, completion: (() -> Void)?){
+        //        let queuingSongs = dispatch_group_create()
+        var tempQueue: [SPTTrack] = []
+        var tempCount: Int = 0
+        
         SPTArtist.artistWithURI(NSURL(string: artistURI), session: AuthController.session, callback: { (error, artistInfo) in
             let artist = artistInfo as! SPTArtist
             QueueController.sharedController.getRelatedArtists(artist, completion: { (artistsArray) in
                 for individualArtist in artistsArray {
                     QueueController.sharedController.getArtistsTopTracks(individualArtist, completion: { (trackArray) in
+                        let songGroup = dispatch_group_create()
+                        
                         for track in trackArray {
-                            QueueController.sharedController.queue.insert(track, atIndex: Int(arc4random_uniform(UInt32(self.queue.count))))
+                            dispatch_group_enter(songGroup)
+                            tempQueue.insert(track, atIndex: Int(arc4random_uniform(UInt32(tempQueue.count))))
+                            dispatch_group_leave(songGroup)
                         }
+                        tempCount += 1
+                        dispatch_group_notify(songGroup, dispatch_get_main_queue(), {
+                            if tempCount == artistsArray.count {
+                            self.queue = tempQueue
+                            completion?()
+                            }
+                        })
                     })
                 }
-                dispatch_group_leave(queuingSongs)
             })
         })
     }
@@ -103,30 +114,52 @@ class QueueController {
                 }
             })
             print(playlistSnapshot.uri)
-            NSUserDefaults.standardUserDefaults().setObject(playlistSnapshot.uri, forKey: self.nsUserDefaultsURIKey)
+            NSUserDefaults.standardUserDefaults().setObject(playlistSnapshot.uri.absoluteString, forKey: QueueController.nsUserDefaultsURIKey)
         }
     }
     
+    func updateExistingSpotifyPlaylistFromQueueArray(completion: () -> Void) {
+        spotifyndPlaylist?.replaceTracksInPlaylist(queue, withAccessToken: AuthController.authToken, callback: { (error) in
+            if error != nil {
+                print("There was an error replacing the playlist..")
+            }
+            completion()
+        })
+    }
     
-    func checkIfSpotifyndPlaylistExists(completion: ((uri: NSURL?) -> Void)?) {
-        guard let uri = NSUserDefaults.standardUserDefaults().objectForKey(self.nsUserDefaultsURIKey) as? NSURL else {
-            print("There was no URI")
-            completion?(uri: nil)
-            return
+    
+    func checkIfSpotifyndPlaylistExists(completion: ((success: Bool) -> Void)?) {
+        guard let uriString = NSUserDefaults.standardUserDefaults().objectForKey(QueueController.nsUserDefaultsURIKey) as? String,
+            let uri = NSURL(string: uriString) else {
+                print("There was no URI")
+                completion?(success: false)
+                return
         }
         guard SPTPlaylistSnapshot.isPlaylistURI(uri) else {
             print("The URI was not a matching playlist")
-            completion?(uri: nil)
+            completion?(success: false)
             return
         }
-        completion?(uri: uri)
+        setupSpotifyndPlaylist(uri) { 
+            completion?(success: true)
+        }
     }
     
-    func setupSpotifyndPlaylist(uri: NSURL) {
+    func setupSpotifyndPlaylist(uri: NSURL, completion: () -> Void) {
         SPTPlaylistSnapshot.playlistWithURI(uri, session: AuthController.session) { (error, playlistSnapshotData) in
             let playlistSnapshot = playlistSnapshotData as! SPTPlaylistSnapshot
             self.spotifyndPlaylist = playlistSnapshot
+            completion()
         }
     }
     
+    init(){
+        checkIfSpotifyndPlaylistExists { (success) in
+            if !success {
+                self.createSpotifyPlaylistFromQueueArray()
+            }
+            print(success)
+            print(self.spotifyndPlaylist?.playableUri)
+        }
+    }
 }

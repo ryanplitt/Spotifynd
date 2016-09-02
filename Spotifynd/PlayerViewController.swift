@@ -29,20 +29,28 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    @IBAction func playButtonTapped(sender: AnyObject) {
-        if !QueueController.sharedController.queue.isEmpty {
-            player?.playSpotifyURI(QueueController.sharedController.queue[0].uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
-                if error != nil {
-                    print("Error")
-                }
-            })
+    override func viewDidAppear(animated: Bool) {
+        dispatch_async(dispatch_get_main_queue()) {
+            QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
+                print("The operation has completed")
+            }
         }
+    }
+    
+    @IBAction func playButtonTapped(sender: AnyObject) {
+        player?.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.playableUri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
+            if error != nil {
+                print("There was an error playing back the playlist")
+            }
+        })
     }
     @IBAction func pauseButtonTapped(sender: AnyObject) {
         player?.setIsPlaying(!(player?.playbackState.isPlaying)!, callback: { (error) in
             if error != nil {
                 print("There was an error pausing. Probably because the new stuff. See SPTPlaybackState vs SPTAudioController")
             }
+            print(self.player?.playbackState.isRepeating)
+            print(self.player?.playbackState.isShuffling)
         })
     }
     
@@ -71,13 +79,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
     
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
-        if isPlaying {
-            playPauseButton.setTitle("Pause", forState: .Normal)
-        }
-        if !isPlaying {
-            playPauseButton.setTitle("Play", forState: .Normal)
-        }
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
+        let image = metadata.currentTrack?.albumCoverArtUri
+        print(image)
     }
     
     
