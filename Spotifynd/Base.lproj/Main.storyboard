@@ -194,6 +194,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PM7-DN-1z8">
                                         <rect key="frame" x="0.0" y="0.0" width="115" height="30"/>
                                         <state key="normal" title="Back"/>
+                                        <connections>
+                                            <action selector="backButtonTapped:" destination="kut-kA-W6B" eventType="touchUpInside" id="jqm-Ev-jzS"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pH9-7F-ZMh">
                                         <rect key="frame" x="115" y="0.0" width="114" height="30"/>
@@ -228,23 +231,23 @@
                                         <rect key="frame" x="0.0" y="28" width="359" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HFL-F7-ClO" id="V1X-He-H0r">
-                                            <rect key="frame" x="0.0" y="0.0" width="359" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="359" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="4" verticalHuggingPriority="251" misplaced="YES" image="nowPlaying" translatesAutoresizingMaskIntoConstraints="NO" id="G3g-Of-Dlu">
                                                     <rect key="frame" x="316" y="5" width="35" height="34"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="35" id="3bn-H3-TCM"/>
-                                                        <constraint firstAttribute="width" constant="35" id="nKm-ly-3k1"/>
+                                                        <constraint firstAttribute="height" constant="20" id="3bn-H3-TCM"/>
+                                                        <constraint firstAttribute="width" constant="20" id="nKm-ly-3k1"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R9w-4p-7Ae">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" ambiguous="YES" misplaced="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R9w-4p-7Ae">
                                                     <rect key="frame" x="8" y="5" width="32" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQh-TB-UPM">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" ambiguous="YES" misplaced="YES" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQh-TB-UPM">
                                                     <rect key="frame" x="8" y="25" width="41" height="14"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -259,6 +262,11 @@
                                                 <constraint firstItem="VQh-TB-UPM" firstAttribute="bottom" secondItem="G3g-Of-Dlu" secondAttribute="bottom" id="deB-gp-BZD"/>
                                                 <constraint firstItem="R9w-4p-7Ae" firstAttribute="leading" secondItem="VQh-TB-UPM" secondAttribute="leading" id="zfW-NH-jgH"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="deB-gp-BZD"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="artistLabel" destination="VQh-TB-UPM" id="bss-kw-P2d"/>

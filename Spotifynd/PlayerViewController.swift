@@ -12,6 +12,11 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var player: SPTAudioStreamingController?
     var indexOfCurrentSong: NSIndexPath?
+    var indexPathRowofCurrentSong:Int? {
+        didSet{
+            NSNotificationCenter.defaultCenter().postNotificationName("indexPathChanged", object: nil)
+        }
+    }
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var albumImage: UIImageView!
@@ -27,6 +32,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
         player = SPTAudioStreamingController.sharedInstance()
         player?.delegate = self
         player?.playbackDelegate = self
@@ -63,6 +69,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func updateUI() {
+        updateTableView()
         if self.player?.metadata == nil || self.player?.metadata.currentTrack == nil {
             //            self.albumImage.image = nil
         } else {
@@ -79,27 +86,40 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.albumImage.image = image
                 })
             }
+            
         }
-        updateTableView()
-        guard let indexpath = self.indexOfCurrentSong else {return}
-        tableView.scrollToRowAtIndexPath(indexpath, atScrollPosition: .Bottom, animated: true)
+        
+    }
+    
+    func scrollToSong(){
+        dispatch_async(dispatch_get_main_queue()) {
+            guard let indexpath = self.indexOfCurrentSong else {return}
+            self.tableView.scrollToRowAtIndexPath(indexpath, atScrollPosition: .Top, animated: true)
+            
+        }
+    }
+    
+    func playPauseFuction(){
+        self.player?.setIsPlaying(!(self.player?.playbackState.isPlaying)!, callback: { (error) in
+            if error != nil {
+                print("Could not change the playing/pausing state")
+            }
+            if self.player?.playbackState.isPlaying == true {
+                self.playPauseButton.setTitle("Pause", forState: .Normal)
+            } else {
+                self.playPauseButton.setTitle("Play", forState: .Normal)
+            }
+        })
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
         dispatch_async(dispatch_get_main_queue()) {
             if self.player?.playbackState == nil {
                 self.initializePlaylistForPlayback({ 
-                    self.player?.setIsPlaying(!(self.player?.playbackState.isPlaying)!, callback: { (error) in
-                        if error != nil {
-                            print("Could not change the playing/pausing state")
-                        }
-                        if ((self.player?.playbackState.isPlaying) != false) {
-                            self.playPauseButton.setTitle("Pause", forState: .Normal)
-                        } else {
-                            self.playPauseButton.setTitle("Play", forState: .Normal)
-                        }
-                    })
+                    self.playPauseFuction()
                 })
+            } else {
+                self.playPauseFuction()
             }
         }
     }
@@ -114,6 +134,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
         self.updateUI()
+    }
+    
+    @IBAction func backButtonTapped(sender: AnyObject) {
+        player?.skipPrevious({ (error) in
+            if error != nil {
+                print(error.localizedDescription)
+            }
+        })
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
@@ -140,6 +168,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if player?.metadata != nil {
             if song.uri.absoluteString == player?.metadata.currentTrack?.uri {
                 self.indexOfCurrentSong = indexPath
+                self.indexPathRowofCurrentSong = indexPath.row
                 cell.nowPlayingImage.hidden = false
             } else {
                 cell.nowPlayingImage.hidden = true
