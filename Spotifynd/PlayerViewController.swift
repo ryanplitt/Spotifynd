@@ -11,7 +11,6 @@ import UIKit
 class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     var player: SPTAudioStreamingController?
-    var indexOfCurrentSong: NSIndexPath?
     var indexPathRowofCurrentSong:Int? {
         didSet{
             NSNotificationCenter.defaultCenter().postNotificationName("indexPathChanged", object: nil)
@@ -25,6 +24,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var currentTimeLabel: UILabel!
+    @IBOutlet weak var timeRemainingLabel: UILabel!
+    @IBOutlet weak var sliderPlaybackBar: UISlider!
     
     
     
@@ -33,15 +35,21 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
+        
         player = SPTAudioStreamingController.sharedInstance()
         player?.delegate = self
         player?.playbackDelegate = self
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(AuthController.authToken)
-        
+        sliderPlaybackBar.value = 0
+        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
+        sliderPlaybackBar.thumbTintColor = .clearColor()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    func setupPlayer() {
+        
         QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
             dispatch_async(dispatch_get_main_queue()) {
                 print("The operation has completed")
@@ -59,12 +67,13 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    func initializePlaylistForPlayback(completion: () -> Void){
+    func initializePlaylistForPlayback(completion: (() -> Void)?){
         self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
             if error != nil {
                 print("There was an error preparing the playlist")
+                self.initializePlaylistForPlayback(nil)
             }
-            completion()
+            completion?()
         }
     }
     
@@ -93,9 +102,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func scrollToSong(){
         dispatch_async(dispatch_get_main_queue()) {
-            guard let indexpath = self.indexOfCurrentSong else {return}
-            self.tableView.scrollToRowAtIndexPath(indexpath, atScrollPosition: .Top, animated: true)
-            
+            if self.indexPathRowofCurrentSong != nil {
+                self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: self.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
+            }
         }
     }
     
@@ -146,6 +155,16 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
         self.updateUI()
+        if let currentURI = player?.metadata.currentTrack?.uri {
+            let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
+            self.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
+        }
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
+        if let duration = self.player?.metadata.currentTrack?.duration {
+            self.sliderPlaybackBar.value = Float(Double(position)/Double(duration))
+        }
     }
     
     func updateTableView(){
@@ -167,7 +186,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if player?.metadata != nil {
             if song.uri.absoluteString == player?.metadata.currentTrack?.uri {
-                self.indexOfCurrentSong = indexPath
                 self.indexPathRowofCurrentSong = indexPath.row
                 cell.nowPlayingImage.hidden = false
             } else {
