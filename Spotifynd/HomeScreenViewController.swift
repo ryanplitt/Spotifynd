@@ -14,6 +14,9 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     @IBOutlet weak var topArtistRangeSelectorView: UIView!
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
+    @IBOutlet weak var nowPlayingTitle: UILabel!
+    @IBOutlet weak var nowPlayingArtist: UILabel!
+    @IBOutlet weak var nowPlayingView: UIView!
     
     @IBOutlet weak var topArtistsRangeSegmentedController: UISegmentedControl!
     override func viewDidLoad() {
@@ -22,9 +25,13 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     override func viewDidAppear(animated: Bool) {
+        nowPlayingView.hidden = true
         SearchController.sharedController.getUsersTopArtistsForHomeScreen("long_term")
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
+        if ((PlayerViewController.sharedPlayer.player?.playbackState.isPlaying) != nil) {
+            nowPlayingView.hidden = false
+        }
         guard AuthController.session != nil else {
             let authVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("authVC")
             let topVC = UIApplication.sharedApplication().keyWindow?.rootViewController
@@ -64,6 +71,14 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             
         }
     }
+    
+    @IBAction func nowPlayingButtonTapped(sender: AnyObject) {
+        let playerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("playerVC")
+        self.presentViewController(playerVC, animated: true) { 
+            //completion
+        }
+    }
+    
     @IBAction func artistsRangeSegmentValueChanged(sender: AnyObject) {
         let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
         SearchController.topArtists = []

@@ -10,6 +10,8 @@ import UIKit
 
 class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
+    static let sharedPlayer = PlayerViewController()
+    
     var player: SPTAudioStreamingController?
     var indexPathRowofCurrentSong:Int? {
         didSet{
@@ -105,6 +107,11 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if self.indexPathRowofCurrentSong != nil {
                 self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: self.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
             }
+        }
+    }
+    @IBAction func collapseButtonTapped(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true) { 
+            HomeScreenViewController.load()
         }
     }
     
