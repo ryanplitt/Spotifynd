@@ -53,9 +53,10 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func setupPlayer() {
         
         QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
-            dispatch_async(dispatch_get_main_queue()) {
-                print("The operation has completed")
-            }
+            print("The operation has completed")
+            self.initializePlaylistForPlayback({
+                print(self.player?.playbackState)
+            })
         }
         QueueController.sharedController.initializeFirstTrackForPlaying(player!) { (track) in
             self.titleLabel.text = track.name
@@ -63,20 +64,31 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             QueueController.sharedController.getImageFromURL(track.album.largestCover.imageURL, completion: { (image) in
                 self.albumImage.image = image
             })
-            self.initializePlaylistForPlayback({
-                print(self.player?.playbackState)
-            })
+            
         }
     }
     
     func initializePlaylistForPlayback(completion: (() -> Void)?){
-        self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
-            if error != nil {
-                print("There was an error preparing the playlist")
+        SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: AuthController.session) { (error, playlistData) in
+            let playlist = playlistData as! SPTPlaylistSnapshot
+            let firstpage = playlist.firstTrackPage
+            let firstSong = firstpage.items.first as! SPTPartialTrack
+            guard firstSong.name == QueueController.sharedController.queue.first?.name else {
+                sleep(1)
+                print("The tracks didn't match")
                 self.initializePlaylistForPlayback(nil)
+                return
             }
-            completion?()
+            self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                if error != nil {
+                    print("There was an error preparing the playlist")
+                    sleep(1)
+                    self.initializePlaylistForPlayback(nil)
+                }
+                completion?()
+            }
         }
+        
     }
     
     func updateUI() {
@@ -120,12 +132,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if error != nil {
                 print("Could not change the playing/pausing state")
             }
-            if self.player?.playbackState.isPlaying == true {
-                self.playPauseButton.setTitle("Pause", forState: .Normal)
-            } else {
-                self.playPauseButton.setTitle("Play", forState: .Normal)
-            }
+            
         })
+        
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
@@ -137,6 +146,11 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             } else {
                 self.playPauseFuction()
             }
+        }
+        if self.player?.playbackState.isPlaying == true {
+            self.playPauseButton.setImage(UIImage(named: "play"), forState: .Normal)
+        } else {
+            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
         }
     }
     
@@ -202,6 +216,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let song = QueueController.sharedController.queue[indexPath.row]
+        player?.playSpotifyURI(song.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
+            if error != nil {
+                print("There was an issue playing the song that was selected")
+            }
+        })
+    }
     
     
     

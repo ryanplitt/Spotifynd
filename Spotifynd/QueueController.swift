@@ -117,12 +117,17 @@ class QueueController {
         }
     }
     
-    func updateExistingSpotifyPlaylistFromQueueArray(completion: () -> Void) {
+    func updateExistingSpotifyPlaylistFromQueueArray(completion: (() -> Void)?) {
+        guard spotifyndPlaylist != nil else {
+            sleep(1)
+            updateExistingSpotifyPlaylistFromQueueArray(nil)
+            return
+        }
         spotifyndPlaylist?.replaceTracksInPlaylist(queue, withAccessToken: AuthController.authToken, callback: { (error) in
             if error != nil {
                 print("There was an error replacing the playlist..")
             }
-            completion()
+            completion?()
         })
     }
     
@@ -169,16 +174,6 @@ class QueueController {
         SPTTrack.trackWithURI(queue[0].uri, session: AuthController.session) { (error, trackData) in
             let track = trackData as! SPTTrack
             completionFirstTrack(track)
-        }
-    }
-    
-    init(){
-        checkIfSpotifyndPlaylistExists { (success) in
-            if !success {
-                self.createSpotifyPlaylistFromQueueArray()
-            }
-            print(success)
-            print(self.spotifyndPlaylist?.playableUri)
         }
     }
 }

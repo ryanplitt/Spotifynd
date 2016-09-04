@@ -32,6 +32,13 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         if ((PlayerViewController.sharedPlayer.player?.playbackState.isPlaying) != nil) {
             nowPlayingView.hidden = false
         }
+        QueueController.sharedController.checkIfSpotifyndPlaylistExists { (success) in
+            if success {
+                print(success)
+            } else {
+                QueueController.sharedController.createSpotifyPlaylistFromQueueArray()
+            }
+        }
         guard AuthController.session != nil else {
             let authVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("authVC")
             let topVC = UIApplication.sharedApplication().keyWindow?.rootViewController
