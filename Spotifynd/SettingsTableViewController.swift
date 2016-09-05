@@ -10,18 +10,18 @@ import UIKit
 
 class SettingsTableViewController: UITableViewController {
     
-        @IBOutlet weak var topArtistsRangeSegmentedController: UISegmentedControl!
+    @IBOutlet weak var topArtistsRangeSegmentedController: UISegmentedControl!
+    @IBOutlet weak var artistsInLibraryCheckSwitch: UISwitch!
+    @IBOutlet weak var songsInLibraryCheckSwitch: UISwitch!
     
+    let artistsNSUserDefaultsKey = "artistsNSUserDefaultsKey"
+    let songNSUserDefaultsKey = "songNSUserDefaultsKey"
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        artistsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(artistsNSUserDefaultsKey)
+        songsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(songNSUserDefaultsKey)
     }
 
     
@@ -31,19 +31,28 @@ class SettingsTableViewController: UITableViewController {
         SearchController.sharedController.getUsersTopArtistsForHomeScreen(topAritstRangeDict[topArtistsRangeSegmentedController.selectedSegmentIndex]!)
     }
     
+    @IBAction func artistsInLibraryCheckValueChanged(sender: AnyObject) {
+        
+        let value = artistsInLibraryCheckSwitch.on
+        NSUserDefaults.standardUserDefaults().setBool(value, forKey: artistsNSUserDefaultsKey)
+        if value {
+            songsInLibraryCheckSwitch.on = true
+            songsInLibraryCheckSwitch.enabled = false
+        }
+        if !value {
+            songsInLibraryCheckSwitch.enabled = true
+        }
+    }
     
+    @IBAction func songsInLibraryCheckValueChanged(sender: AnyObject) {
+        let value = songsInLibraryCheckSwitch.on
+        NSUserDefaults.standardUserDefaults().setBool(value, forKey: songNSUserDefaultsKey)
+        if value {
+            return
+        }
+    }
 
     // MARK: - Table view data source
-
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

@@ -19,13 +19,9 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     override func viewDidAppear(animated: Bool) {
-        nowPlayingView.hidden = true
         SearchController.sharedController.getUsersTopArtistsForHomeScreen("long_term")
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
-        if ((PlayerViewController.sharedPlayer.player?.playbackState.isPlaying) != nil) {
-            nowPlayingView.hidden = false
-        }
         QueueController.sharedController.checkIfSpotifyndPlaylistExists { (success) in
             if success {
                 print(success)
@@ -56,7 +52,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         resultsController.searchResultsView = self
         
         searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.placeholder = "Search for an Artist"
         searchController.definesPresentationContext = true
     }

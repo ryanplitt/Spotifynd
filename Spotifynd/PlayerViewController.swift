@@ -80,7 +80,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: AuthController.session) { (error, playlistData) in
                 let playlist = playlistData as! SPTPlaylistSnapshot
                 let firstpage = playlist.firstTrackPage
-                let firstSong = firstpage.items.first as! SPTPartialTrack
+                guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
                 guard firstSong.name == QueueController.sharedController.queue.first?.name else {
                     sleep(1)
                     print("The tracks didn't match")
@@ -193,7 +193,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let actionsheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let removeArtistTracks = UIAlertAction(title: "Remove Tracks From This Artist", style: .Default) { (_) in
-            // TODO: Remove Tracks using QueueController function
+            let currentArtistName = self.player?.metadata.currentTrack?.artistName
+            self.player?.skipNext({ (error) in
+                if error != nil {
+                    print("There was an error skipping the track")
+                }
+            })
+            QueueController.sharedController.removeTracksArtistFromQueue(currentArtistName!, completion: {
+                    self.tableView.reloadData()
+                })
         }
         
         let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .Default) { (_) in

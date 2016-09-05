@@ -60,19 +60,28 @@ class QueueController {
         queue.removeAtIndex(index!)
     }
     
-    func removeTracksArtistFromQueue(track: SPTTrack) {
-        let artistOfTrack = track.artists.first as! SPTPartialArtist
+    func removeTracksArtistFromQueue(artistName: String, completion: () -> Void) {
+        var tracksToRemove: [SPTPartialTrack] = []
+        let removeTrackGroup = dispatch_group_create()
         for song in queue {
-            if song.artists.first as! SPTPartialArtist == artistOfTrack {
+            if song.artists.first?.name  == artistName {
+                tracksToRemove.append(song)
                 let index = queue.indexOf(song)
                 guard index != nil else { return }
                 queue.removeAtIndex(index!)
             }
         }
+        dispatch_group_notify(removeTrackGroup, dispatch_get_main_queue()) { 
+            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: AuthController.authToken, callback: { (error) in
+            if error != nil {
+                print("There was an error removing the tracks from the playlist")
+            }
+                completion()
+        })
+        }
     }
     
     func setQueueFromArtist(artistURI: String, completion: (() -> Void)?){
-        //        let queuingSongs = dispatch_group_create()
         var tempQueue: [SPTTrack] = []
         var tempCount: Int = 0
         
