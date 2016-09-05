@@ -21,6 +21,7 @@
 		FB0C647E1D75CCAE00C409AB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C647D1D75CCAE00C409AB /* Spotify.framework */; };
 		FB0C64EA1D775B8C00C409AB /* QueueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C64E91D775B8C00C409AB /* QueueController.swift */; };
 		FB0C65361D7A2AEB00C409AB /* QueueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C65351D7A2AEB00C409AB /* QueueTableViewCell.swift */; };
+		FB0C657A1D7E06FD00C409AB /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		FB0C647D1D75CCAE00C409AB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		FB0C64E91D775B8C00C409AB /* QueueController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueController.swift; sourceTree = "<group>"; };
 		FB0C65351D7A2AEB00C409AB /* QueueTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueTableViewCell.swift; sourceTree = "<group>"; };
+		FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				FB0C64521D73289B00C409AB /* HomeScreenViewController.swift */,
 				FB0C64541D747F6300C409AB /* SearchResultsTableViewController.swift */,
 				FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */,
+				FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */,
 				FB0C65351D7A2AEB00C409AB /* QueueTableViewCell.swift */,
 			);
 			name = ViewControllers;
@@ -191,6 +194,7 @@
 				FB0C64551D747F6300C409AB /* SearchResultsTableViewController.swift in Sources */,
 				FB0C64511D70F4E600C409AB /* AuthViewController.swift in Sources */,
 				FB0C64351D70BDEF00C409AB /* AppDelegate.swift in Sources */,
+				FB0C657A1D7E06FD00C409AB /* SettingsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

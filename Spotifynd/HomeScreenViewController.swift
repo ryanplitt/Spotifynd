@@ -10,15 +10,9 @@ import UIKit
 
 class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
     
-    
-    @IBOutlet weak var topArtistRangeSelectorView: UIView!
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
-    @IBOutlet weak var nowPlayingTitle: UILabel!
-    @IBOutlet weak var nowPlayingArtist: UILabel!
-    @IBOutlet weak var nowPlayingView: UIView!
-    
-    @IBOutlet weak var topArtistsRangeSegmentedController: UISegmentedControl!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
@@ -84,12 +78,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         self.presentViewController(playerVC, animated: true) { 
             //completion
         }
-    }
-    
-    @IBAction func artistsRangeSegmentValueChanged(sender: AnyObject) {
-        let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
-        SearchController.topArtists = []
-        SearchController.sharedController.getUsersTopArtistsForHomeScreen(topAritstRangeDict[topArtistsRangeSegmentedController.selectedSegmentIndex]!)
     }
     
     func updateTableView() {

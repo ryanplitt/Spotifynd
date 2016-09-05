@@ -28,7 +28,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var currentTimeLabel: UILabel!
     @IBOutlet weak var timeRemainingLabel: UILabel!
-    @IBOutlet weak var sliderPlaybackBar: UISlider!
+    @IBOutlet weak var sliderPlaybackBar: mySlider!
+    @IBOutlet weak var repeatButton: UIButton!
     
     
     
@@ -45,9 +46,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         player?.playbackDelegate = self
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(AuthController.authToken)
-        sliderPlaybackBar.value = 0
-        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
-        sliderPlaybackBar.thumbTintColor = .clearColor()
+        setupSlider()
     }
     
     func setupPlayer() {
@@ -68,26 +67,42 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func setupSlider() {
+        sliderPlaybackBar.value = 0
+        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
+        sliderPlaybackBar.thumbTintColor = .blueColor()
+    }
+    
     func initializePlaylistForPlayback(completion: (() -> Void)?){
-        SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: AuthController.session) { (error, playlistData) in
-            let playlist = playlistData as! SPTPlaylistSnapshot
-            let firstpage = playlist.firstTrackPage
-            let firstSong = firstpage.items.first as! SPTPartialTrack
-            guard firstSong.name == QueueController.sharedController.queue.first?.name else {
-                sleep(1)
-                print("The tracks didn't match")
-                self.initializePlaylistForPlayback(nil)
-                return
-            }
-            self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
-                if error != nil {
-                    print("There was an error preparing the playlist")
+        let qualityOfService = QOS_CLASS_BACKGROUND
+        let backgroundQueue = dispatch_get_global_queue(qualityOfService, 0)
+        dispatch_async(backgroundQueue) { 
+            SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: AuthController.session) { (error, playlistData) in
+                let playlist = playlistData as! SPTPlaylistSnapshot
+                let firstpage = playlist.firstTrackPage
+                let firstSong = firstpage.items.first as! SPTPartialTrack
+                guard firstSong.name == QueueController.sharedController.queue.first?.name else {
                     sleep(1)
+                    print("The tracks didn't match")
                     self.initializePlaylistForPlayback(nil)
+                    return
                 }
-                completion?()
+                self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                    if error != nil {
+                        print("There was an error preparing the playlist")
+                        sleep(1)
+                        self.initializePlaylistForPlayback(nil)
+                    }
+                    self.player?.setIsPlaying(false, callback: { (error) in
+                        if error != nil {
+                            print("There was an error setting the player to pause.")
+                        }
+                    })
+                    completion?()
+                }
             }
         }
+        
         
     }
     
@@ -109,9 +124,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.albumImage.image = image
                 })
             }
-            
         }
-        
     }
     
     func scrollToSong(){
@@ -138,6 +151,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
+        guard player != nil else { return }
         dispatch_async(dispatch_get_main_queue()) {
             if self.player?.playbackState == nil {
                 self.initializePlaylistForPlayback({ 
@@ -147,11 +161,13 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 self.playPauseFuction()
             }
         }
+        guard player?.playbackState != nil else { return }
         if self.player?.playbackState.isPlaying == true {
             self.playPauseButton.setImage(UIImage(named: "play"), forState: .Normal)
         } else {
             self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
         }
+        player?.setValue(false, forKey: "repeat")
     }
     
     @IBAction func nextButtonTapped(sender: AnyObject) {
@@ -161,6 +177,43 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         })
     }
+    
+    @IBAction func repeatButtonTapped(sender: AnyObject) {
+        // TODO:
+        guard player != nil && player?.playbackState != nil else {return}
+        if player?.playbackState.isRepeating == true {
+            player?.setValue(false, forKey: "repeat")
+        }
+        if player?.playbackState.isRepeating == false {
+            player?.setValue(true, forKey: "repeat")
+        }
+    }
+    
+    @IBAction func moreButtonTapped(sender: AnyObject) {
+        let actionsheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let removeArtistTracks = UIAlertAction(title: "Remove Tracks From This Artist", style: .Default) { (_) in
+            // TODO: Remove Tracks using QueueController function
+        }
+        
+        let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .Default) { (_) in
+            // TODO: Add More songs using QueueController function
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in
+        }
+        
+        actionsheet.addAction(removeArtistTracks)
+        actionsheet.addAction(addMoreSongs)
+        actionsheet.addAction(cancel)
+        
+        presentViewController(actionsheet, animated: true) { 
+            // completion
+        }
+        
+        
+    }
+    
     
     func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
         self.updateUI()
@@ -185,6 +238,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
         if let duration = self.player?.metadata.currentTrack?.duration {
             self.sliderPlaybackBar.value = Float(Double(position)/Double(duration))
+        }
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeRepeatStatus isRepeated: Bool) {
+        if isRepeated {
+        repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
+        } else {
+            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
         }
     }
     
@@ -217,10 +278,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let song = QueueController.sharedController.queue[indexPath.row]
-        player?.playSpotifyURI(song.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0, callback: { (error) in
+        player?.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: UInt(indexPath.row), startingWithPosition: 0, callback: { (error) in
             if error != nil {
-                print("There was an issue playing the song that was selected")
+                print("There was a problem playing the selected track")
             }
         })
     }
@@ -237,4 +297,20 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
      }
      */
     
+}
+
+class mySlider: UISlider {
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override func minimumValueImageRectForBounds(bounds: CGRect) -> CGRect {
+        return CGRectZero
+    }
+    
+    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+        return super.thumbRectForBounds(
+            bounds, trackRect: rect, value: value)
+    }
 }

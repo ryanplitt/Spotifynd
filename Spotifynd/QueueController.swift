@@ -113,6 +113,7 @@ class QueueController {
                 }
             })
             print(playlistSnapshot.uri)
+            self.spotifyndPlaylist = playlistSnapshot
             NSUserDefaults.standardUserDefaults().setObject(playlistSnapshot.uri.absoluteString, forKey: QueueController.nsUserDefaultsURIKey)
         }
     }
@@ -175,5 +176,16 @@ class QueueController {
             let track = trackData as! SPTTrack
             completionFirstTrack(track)
         }
+    }
+    
+    
+    func removeArtistsTracksFromPlaylist() {
+        
+        // TODO:
+    }
+    
+    func addMoreSongsBasedOnThisArtist() {
+        
+        // TODO:
     }
 }

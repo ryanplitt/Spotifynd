@@ -56,7 +56,6 @@ class SearchController {
             dispatch_group_enter(artistFetchGroup)
             SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
                 guard data != nil else {print("data was nil") ; return}
-                print(data.description)
                 responseResponse = response
                 responseData = data
                 dispatch_group_leave(artistFetchGroup)
