@@ -11,13 +11,7 @@ import UIKit
 class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     static let sharedPlayer = PlayerViewController()
-    
-    var player: SPTAudioStreamingController?
-    var indexPathRowofCurrentSong:Int? {
-        didSet{
-            NSNotificationCenter.defaultCenter().postNotificationName("indexPathChanged", object: nil)
-        }
-    }
+    let player = PlayerController.sharedController.player
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var albumImage: UIImageView!
@@ -40,30 +34,20 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "queueUpdated", object: nil)
         
         self.navigationController?.navigationBarHidden = true
         
-        player = SPTAudioStreamingController.sharedInstance()
-        player?.delegate = self
-        player?.playbackDelegate = self
-        try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
-        player?.loginWithAccessToken(AuthController.authToken)
         setupSlider()
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
         navigationController?.navigationBarHidden = false
     }
     
-    func setupPlayer() {
-        
-        QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
-            print("The operation has completed")
-            self.initializePlaylistForPlayback({
-                print(self.player?.playbackState)
-            })
-        }
-        QueueController.sharedController.initializeFirstTrackForPlaying(player!) { (track) in
+    func setupInitialPlayerAppearance() {
+        PlayerController.sharedController.initializeFirstTrackForPlaying { (track) in
             self.titleLabel.text = track.name
             self.artistLabel.text = track.artists.first?.name
             QueueController.sharedController.getImageFromURL(track.album.largestCover.imageURL, completion: { (image) in
@@ -72,6 +56,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func setupPlayer(){
+        PlayerController.sharedController.setupPlayer()
+    }
+    
+    func initializePlaylistForPlayback(){
+        PlayerController.sharedController.initializePlaylistForPlayback(nil)
+    }
+    
+    
     func setupSlider() {
         sliderPlaybackBar.value = 0
         sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
@@ -79,38 +72,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         sliderPlaybackBar.tintColor = UIColor ( red: 0.0087, green: 0.9984, blue: 0.0468, alpha: 1.0 )
     }
     
-    func initializePlaylistForPlayback(completion: (() -> Void)?){
-        let qualityOfService = QOS_CLASS_BACKGROUND
-        let backgroundQueue = dispatch_get_global_queue(qualityOfService, 0)
-        dispatch_async(backgroundQueue) { 
-            SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: AuthController.session) { (error, playlistData) in
-                let playlist = playlistData as! SPTPlaylistSnapshot
-                let firstpage = playlist.firstTrackPage
-                guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
-                guard firstSong.name == QueueController.sharedController.queue.first?.name else {
-                    sleep(1)
-                    print("The tracks didn't match")
-                    self.initializePlaylistForPlayback(nil)
-                    return
-                }
-                self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
-                    if error != nil {
-                        print("There was an error preparing the playlist")
-                        sleep(1)
-                        self.initializePlaylistForPlayback(nil)
-                    }
-                    self.player?.setIsPlaying(false, callback: { (error) in
-                        if error != nil {
-                            print("There was an error setting the player to pause.")
-                        }
-                    })
-                    completion?()
-                }
-            }
-        }
-        
-        
-    }
+    
     
     func updateUI() {
         updateTableView()
@@ -123,7 +85,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self.titleLabel.text = self.player?.metadata.currentTrack?.name
             self.artistLabel.text = self.player?.metadata.currentTrack?.artistName
             
-            SPTTrack.trackWithURI(NSURL(string: (self.player?.metadata.currentTrack?.uri)!), session: AuthController.session) { (error, trackdata) in
+            SPTTrack.trackWithURI(NSURL(string: (self.player?.metadata.currentTrack?.uri)!), session: PlayerController.session) { (error, trackdata) in
                 let track = trackdata as! SPTTrack
                 let imageURL = track.album.largestCover.imageURL
                 QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
@@ -135,34 +97,26 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func scrollToSong(){
         dispatch_async(dispatch_get_main_queue()) {
-            if self.indexPathRowofCurrentSong != nil {
-                self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: self.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
+            if PlayerController.sharedController.indexPathRowofCurrentSong != nil {
+                self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: PlayerController.sharedController.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
             }
         }
     }
+    
     @IBAction func collapseButtonTapped(sender: AnyObject) {
         navigationController?.popViewControllerAnimated(true)
     }
     
-    func playPauseFuction(){
-        self.player?.setIsPlaying(!(self.player?.playbackState.isPlaying)!, callback: { (error) in
-            if error != nil {
-                print("Could not change the playing/pausing state")
-            }
-            
-        })
-        
-    }
     
     @IBAction func playButtonTapped(sender: AnyObject) {
         guard player != nil else { return }
         dispatch_async(dispatch_get_main_queue()) {
             if self.player?.playbackState == nil {
-                self.initializePlaylistForPlayback({ 
-                    self.playPauseFuction()
+                PlayerController.sharedController.initializePlaylistForPlayback({
+                    PlayerController.sharedController.playPauseFuction()
                 })
             } else {
-                self.playPauseFuction()
+                PlayerController.sharedController.playPauseFuction()
             }
         }
         guard player?.playbackState != nil else { return }
@@ -204,8 +158,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }
             })
             QueueController.sharedController.removeTracksArtistFromQueue(currentArtistName!, completion: {
-                    self.tableView.reloadData()
-                })
+                self.tableView.reloadData()
+            })
         }
         
         let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .Default) { (_) in
@@ -226,11 +180,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    
-    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
-        self.updateUI()
-    }
-    
     @IBAction func backButtonTapped(sender: AnyObject) {
         player?.skipPrevious({ (error) in
             if error != nil {
@@ -239,11 +188,18 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
     }
     
+    
+    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
+        self.updateUI()
+    }
+    
+    
+    
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
         self.updateUI()
         if let currentURI = player?.metadata.currentTrack?.uri {
             let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
-            self.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
+            PlayerController.sharedController.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
         }
     }
     
@@ -255,7 +211,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeRepeatStatus isRepeated: Bool) {
         if isRepeated {
-        repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
+            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
         } else {
             repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
         }
@@ -284,7 +240,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if player?.metadata != nil {
             if song.uri.absoluteString == player?.metadata.currentTrack?.uri {
-                self.indexPathRowofCurrentSong = indexPath.row
+                PlayerController.sharedController.indexPathRowofCurrentSong = indexPath.row
                 cell.nowPlayingImage.hidden = false
             } else {
                 cell.nowPlayingImage.hidden = true

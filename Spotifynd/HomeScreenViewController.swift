@@ -12,11 +12,12 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
-    var presentedViewControllerr: UIViewController?
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
+//        _ = PlayerController.sharedController
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -30,7 +31,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                 QueueController.sharedController.createSpotifyPlaylistFromQueueArray()
             }
         }
-        guard AuthController.session != nil else {
+        guard PlayerController.session != nil else {
             let authVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("authVC")
             let topVC = UIApplication.sharedApplication().keyWindow?.rootViewController
             guard let topViewC = topVC else {

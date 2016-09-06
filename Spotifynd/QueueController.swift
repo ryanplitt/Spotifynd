@@ -11,6 +11,7 @@ import Foundation
 
 class QueueController {
     
+    // MARK: Queue Properties
     var spotifyndPlaylist: SPTPlaylistSnapshot?
     
     static let nsUserDefaultsURIKey = "uriKey"
@@ -22,8 +23,9 @@ class QueueController {
         }
     }
     
+    // MARK: Home Screen Functions
     func getRelatedArtists(artist: SPTArtist, completion: ([SPTArtist]) -> Void) {
-        artist.requestRelatedArtistsWithAccessToken(AuthController.authToken) { (error, artistsList) in
+        artist.requestRelatedArtistsWithAccessToken(PlayerController.authToken) { (error, artistsList) in
             if error != nil {
                 print(error.localizedDescription)
                 completion([])
@@ -35,7 +37,7 @@ class QueueController {
     }
     
     func getArtistsTopTracks(artist: SPTArtist, numberOfTracks: Int = 5, completion: ([SPTTrack]) -> Void){
-        artist.requestTopTracksForTerritory("US", withAccessToken: AuthController.authToken) { (error, trackslist) in
+        artist.requestTopTracksForTerritory("US", withAccessToken: PlayerController.authToken) { (error, trackslist) in
             if error != nil {
                 print(error.localizedDescription)
                 completion([])
@@ -47,18 +49,8 @@ class QueueController {
         }
     }
     
-    func queueSongToArray(track: SPTTrack) {
-        queue.append(track)
-    }
-    
-    func removeTrackFromQueue(track: SPTTrack) {
-        let index = queue.indexOf(track)
-        guard index != nil else {
-            print("Could not find track in queue.")
-            return
-        }
-        queue.removeAtIndex(index!)
-    }
+
+    // MARK: Queue Management
     
     func removeTracksArtistFromQueue(artistName: String, completion: () -> Void) {
         var tracksToRemove: [SPTPartialTrack] = []
@@ -72,7 +64,7 @@ class QueueController {
             }
         }
         dispatch_group_notify(removeTrackGroup, dispatch_get_main_queue()) { 
-            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: AuthController.authToken, callback: { (error) in
+            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: PlayerController.authToken, callback: { (error) in
             if error != nil {
                 print("There was an error removing the tracks from the playlist")
             }
@@ -85,7 +77,7 @@ class QueueController {
         var tempQueue: [SPTTrack] = []
         var tempCount: Int = 0
         
-        SPTArtist.artistWithURI(NSURL(string: artistURI), session: AuthController.session, callback: { (error, artistInfo) in
+        SPTArtist.artistWithURI(NSURL(string: artistURI), session: PlayerController.session, callback: { (error, artistInfo) in
             let artist = artistInfo as! SPTArtist
             QueueController.sharedController.getRelatedArtists(artist, completion: { (artistsArray) in
                 for individualArtist in artistsArray {
@@ -112,11 +104,11 @@ class QueueController {
     
     
     func createSpotifyPlaylistFromQueueArray() {
-        SPTPlaylistList.createPlaylistWithName("Spotifynd", publicFlag: false, session: AuthController.session) { (error, playlistSnapshot) in
+        SPTPlaylistList.createPlaylistWithName("Spotifynd", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
             if error != nil {
                 print("There was an error making the playlist")
             }
-            playlistSnapshot.addTracksToPlaylist(self.queue, withAccessToken: AuthController.authToken, callback: { (error) in
+            playlistSnapshot.addTracksToPlaylist(self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
                 if error != nil {
                     print("There was an error adding the tracks to the new playlist")
                 }
@@ -133,7 +125,7 @@ class QueueController {
             updateExistingSpotifyPlaylistFromQueueArray(nil)
             return
         }
-        spotifyndPlaylist?.replaceTracksInPlaylist(queue, withAccessToken: AuthController.authToken, callback: { (error) in
+        spotifyndPlaylist?.replaceTracksInPlaylist(queue, withAccessToken: PlayerController.authToken, callback: { (error) in
             if error != nil {
                 print("There was an error replacing the playlist..")
             }
@@ -160,13 +152,33 @@ class QueueController {
     }
     
     func setupSpotifyndPlaylist(uri: NSURL, completion: () -> Void) {
-        SPTPlaylistSnapshot.playlistWithURI(uri, session: AuthController.session) { (error, playlistSnapshotData) in
+        SPTPlaylistSnapshot.playlistWithURI(uri, session: PlayerController.session) { (error, playlistSnapshotData) in
             let playlistSnapshot = playlistSnapshotData as! SPTPlaylistSnapshot
             self.spotifyndPlaylist = playlistSnapshot
             completion()
         }
     }
     
+        func addMoreSongsBasedOnThisArtist() {
+        
+        // TODO:
+    }
+    
+        func queueSongToArray(track: SPTTrack) {
+        queue.append(track)
+    }
+    
+        func removeTrackFromQueue(track: SPTTrack) {
+        let index = queue.indexOf(track)
+        guard index != nil else {
+            print("Could not find track in queue.")
+            return
+        }
+        queue.removeAtIndex(index!)
+    }
+    
+    
+    // MARK: Helper Functions
     func getImageFromURL(imageURL: NSURL, completion: ((image: UIImage) -> Void)?){
         let data = NSData(contentsOfURL: imageURL)
         guard data != nil else {
@@ -178,17 +190,5 @@ class QueueController {
             return
         }
         completion?(image: image)
-    }
-    
-    func initializeFirstTrackForPlaying(player: SPTAudioStreamingController, completionFirstTrack: (SPTTrack) -> Void){
-        SPTTrack.trackWithURI(queue[0].uri, session: AuthController.session) { (error, trackData) in
-            let track = trackData as! SPTTrack
-            completionFirstTrack(track)
-        }
-    }
-    
-    func addMoreSongsBasedOnThisArtist() {
-        
-        // TODO:
     }
 }

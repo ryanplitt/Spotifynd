@@ -38,12 +38,12 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     }
     
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
-        AuthController.session = session
-        AuthController.authToken = session.accessToken
-        dispatch_async(dispatch_get_main_queue()) { 
+        PlayerController.session = session
+        PlayerController.authToken = session.accessToken
+        dispatch_async(dispatch_get_main_queue()) {
             self.performSegueWithIdentifier("toHomeScreen", sender: self)
+            PlayerController.sharedController.initializePlayer()
         }
-        
     }
     
     func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
@@ -58,14 +58,18 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
     
     
-    /*
+/*
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
      override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
      // Get the new view controller using segue.destinationViewController.
      // Pass the selected object to the new view controller.
+        if segue.identifier == "toHomeScreen" {
+            print("A string")
+        }
+        
+        
      }
-     */
-    
+    */
 }
