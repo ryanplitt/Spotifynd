@@ -12,6 +12,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
+    var presentedViewControllerr: UIViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,10 +71,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     @IBAction func nowPlayingButtonTapped(sender: AnyObject) {
-        let playerVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("playerVC")
-        self.presentViewController(playerVC, animated: true) { 
-            //completion
-        }
+        //
     }
     
     func updateTableView() {
@@ -119,6 +117,10 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             }
             QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString, completion: nil)
             SearchController.transferedResult = SPTPartialArtist()
+        }
+        
+        if segue.identifier == "existingVC" {
+            
         }
      }
 }

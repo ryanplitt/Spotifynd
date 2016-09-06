@@ -41,12 +41,18 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
         
+        self.navigationController?.navigationBarHidden = true
+        
         player = SPTAudioStreamingController.sharedInstance()
         player?.delegate = self
         player?.playbackDelegate = self
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(AuthController.authToken)
         setupSlider()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        navigationController?.navigationBarHidden = false
     }
     
     func setupPlayer() {
@@ -63,14 +69,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             QueueController.sharedController.getImageFromURL(track.album.largestCover.imageURL, completion: { (image) in
                 self.albumImage.image = image
             })
-            
         }
     }
     
     func setupSlider() {
         sliderPlaybackBar.value = 0
         sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
-        sliderPlaybackBar.thumbTintColor = .blueColor()
+        sliderPlaybackBar.thumbTintColor = .clearColor()
+        sliderPlaybackBar.tintColor = UIColor ( red: 0.0087, green: 0.9984, blue: 0.0468, alpha: 1.0 )
     }
     
     func initializePlaylistForPlayback(completion: (() -> Void)?){
@@ -135,9 +141,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     @IBAction func collapseButtonTapped(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true) { 
-            HomeScreenViewController.load()
-        }
+        navigationController?.popViewControllerAnimated(true)
     }
     
     func playPauseFuction(){
@@ -255,6 +259,10 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         } else {
             repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
         }
+    }
+    
+    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
+        navigationController?.popToRootViewControllerAnimated(true)
     }
     
     func updateTableView(){

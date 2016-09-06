@@ -44,26 +44,28 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
             self.performSegueWithIdentifier("toHomeScreen", sender: self)
         }
         
-}
-
-func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
-    self.dismissViewControllerAnimated(true, completion: nil)
-}
-
-
-
-
-
-
-
-/*
- // MARK: - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
- // Get the new view controller using segue.destinationViewController.
- // Pass the selected object to the new view controller.
- }
- */
-
+    }
+    
+    func authenticationViewControllerDidCancelLogin(authenticationViewController: SPTAuthViewController!) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    @IBAction func prepareForUnwind(segue: UIStoryboardSegue){
+        
+    }
+    
+    
+    
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

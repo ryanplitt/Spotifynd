@@ -187,12 +187,6 @@ class QueueController {
         }
     }
     
-    
-    func removeArtistsTracksFromPlaylist() {
-        
-        // TODO:
-    }
-    
     func addMoreSongsBasedOnThisArtist() {
         
         // TODO:
