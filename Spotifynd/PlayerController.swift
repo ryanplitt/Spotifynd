@@ -36,8 +36,6 @@ class PlayerController {
     
     func initializePlayer() {
         player = SPTAudioStreamingController.sharedInstance()
-        player?.delegate = PlayerViewController()
-        player?.playbackDelegate = PlayerViewController()
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(PlayerController.authToken)
     }
@@ -97,9 +95,12 @@ class PlayerController {
             if error != nil {
                 print("Could not change the playing/pausing state")
             }
-            
         })
     }
+    
+    
+    // MARK: - Delegate Functions
+    
     
     
     

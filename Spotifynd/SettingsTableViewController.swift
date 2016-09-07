@@ -14,27 +14,31 @@ class SettingsTableViewController: UITableViewController {
     @IBOutlet weak var artistsInLibraryCheckSwitch: UISwitch!
     @IBOutlet weak var songsInLibraryCheckSwitch: UISwitch!
     
-    let artistsNSUserDefaultsKey = "artistsNSUserDefaultsKey"
-    let songNSUserDefaultsKey = "songNSUserDefaultsKey"
+    static let artistsNSUserDefaultsKey = "artistsNSUserDefaultsKey"
+    static let songNSUserDefaultsKey = "songNSUserDefaultsKey"
+    static let topArtistsRangeNSUserDefaultsKey = "TopArtistsRange"
+    static let topArtistsRangeIntDefaultsKey = "TopArtistsRangeInt"
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        artistsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(artistsNSUserDefaultsKey)
-        songsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(songNSUserDefaultsKey)
+        topArtistsRangeSegmentedController.selectedSegmentIndex = NSUserDefaults.standardUserDefaults().integerForKey(SettingsTableViewController.topArtistsRangeIntDefaultsKey)
+        artistsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.artistsNSUserDefaultsKey)
+        songsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.songNSUserDefaultsKey)
     }
 
     
     @IBAction func artistsRangeSegmentValueChanged(sender: AnyObject) {
         let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
-        SearchController.topArtists = []
-        SearchController.sharedController.getUsersTopArtistsForHomeScreen(topAritstRangeDict[topArtistsRangeSegmentedController.selectedSegmentIndex]!)
+        let onValue = topArtistsRangeSegmentedController.selectedSegmentIndex
+        NSUserDefaults.standardUserDefaults().setObject(topAritstRangeDict[onValue], forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey)
+        NSUserDefaults.standardUserDefaults().setInteger(onValue, forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey)
     }
     
     @IBAction func artistsInLibraryCheckValueChanged(sender: AnyObject) {
         
         let value = artistsInLibraryCheckSwitch.on
-        NSUserDefaults.standardUserDefaults().setBool(value, forKey: artistsNSUserDefaultsKey)
+        NSUserDefaults.standardUserDefaults().setBool(value, forKey: SettingsTableViewController.artistsNSUserDefaultsKey)
         if value {
             songsInLibraryCheckSwitch.on = true
             songsInLibraryCheckSwitch.enabled = false
@@ -46,7 +50,7 @@ class SettingsTableViewController: UITableViewController {
     
     @IBAction func songsInLibraryCheckValueChanged(sender: AnyObject) {
         let value = songsInLibraryCheckSwitch.on
-        NSUserDefaults.standardUserDefaults().setBool(value, forKey: songNSUserDefaultsKey)
+        NSUserDefaults.standardUserDefaults().setBool(value, forKey: SettingsTableViewController.songNSUserDefaultsKey)
         if value {
             return
         }

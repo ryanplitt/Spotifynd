@@ -17,11 +17,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
-//        _ = PlayerController.sharedController
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        SearchController.sharedController.getUsersTopArtistsForHomeScreen("long_term")
+        SearchController.sharedController.getUsersTopArtistsForHomeScreen()
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
         QueueController.sharedController.checkIfSpotifyndPlaylistExists { (success) in
@@ -30,16 +26,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             } else {
                 QueueController.sharedController.createSpotifyPlaylistFromQueueArray()
             }
-        }
-        guard PlayerController.session != nil else {
-            let authVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("authVC")
-            let topVC = UIApplication.sharedApplication().keyWindow?.rootViewController
-            guard let topViewC = topVC else {
-                print("There was no topVC")
-                return
-            }
-            topViewC.presentViewController(authVC, animated: true, completion: nil)
-            return
         }
     }
     
@@ -118,10 +104,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             }
             QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString, completion: nil)
             SearchController.transferedResult = SPTPartialArtist()
-        }
-        
-        if segue.identifier == "existingVC" {
-            
         }
      }
 }

@@ -19,6 +19,7 @@ class SearchController {
             NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: "topArtistLoaded", object: nil))
         }
     }
+    static var range: String?
     
     static func searchForArtist(name: String, completion: () -> Void){
         SPTSearch.performSearchWithQuery(name, queryType: .QueryTypeArtist, accessToken: PlayerController.authToken) { (error, list) in
@@ -35,14 +36,19 @@ class SearchController {
         }
     }
     
-    func getUsersTopArtistsForHomeScreen(range: String){
+    func getUsersTopArtistsForHomeScreen(){
         dispatch_async(dispatch_get_main_queue()) {
+            if NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) == nil {
+                SearchController.range = "long_term"
+            } else {
+                SearchController.range = NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) as! String
+            }
             var responseResponse: NSURLResponse?
             var responseData: NSData?
             var listPage = SPTListPage?()
             var request: NSURLRequest?
             do {
-                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: PlayerController.authToken, httpMethod: "GET", values: ["time_range":range, "limit":20], valueBodyIsJSON: true, sendDataAsQueryString: true)
+                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: PlayerController.authToken, httpMethod: "GET", values: ["time_range":SearchController.range!,"limit":20], valueBodyIsJSON: true, sendDataAsQueryString: true)
             } catch {
                 print("error getting request")
             }

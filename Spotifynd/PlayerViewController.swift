@@ -39,7 +39,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController?.navigationBarHidden = true
         
         setupSlider()
-        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        player?.delegate = self
+        player?.playbackDelegate = self
+        if player?.playbackState?.isPlaying == true {
+            updateUI()
+            setPlayPauseButton()
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -62,6 +70,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func initializePlaylistForPlayback(){
         PlayerController.sharedController.initializePlaylistForPlayback(nil)
+        setPlayPauseButton()
     }
     
     
@@ -119,13 +128,19 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 PlayerController.sharedController.playPauseFuction()
             }
         }
-        guard player?.playbackState != nil else { return }
-        if self.player?.playbackState.isPlaying == true {
-            self.playPauseButton.setImage(UIImage(named: "play"), forState: .Normal)
-        } else {
-            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
-        }
         player?.setValue(false, forKey: "repeat")
+    }
+    
+    func setPlayPauseButton(){
+        guard player?.playbackState != nil else {
+            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
+            return
+        }
+        if self.player?.playbackState.isPlaying == true {
+            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
+        } else {
+            self.playPauseButton.setImage(UIImage(named: "play"), forState: .Normal)
+        }
     }
     
     @IBAction func nextButtonTapped(sender: AnyObject) {
@@ -188,39 +203,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
     }
     
-    
-    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
-        self.updateUI()
-    }
-    
-    
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
-        self.updateUI()
-        if let currentURI = player?.metadata.currentTrack?.uri {
-            let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
-            PlayerController.sharedController.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
-        }
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
-        if let duration = self.player?.metadata.currentTrack?.duration {
-            self.sliderPlaybackBar.value = Float(Double(position)/Double(duration))
-        }
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeRepeatStatus isRepeated: Bool) {
-        if isRepeated {
-            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
-        } else {
-            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
-        }
-    }
-    
-    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
-        navigationController?.popToRootViewControllerAnimated(true)
-    }
-    
     func updateTableView(){
         tableView.reloadData()
     }
@@ -258,6 +240,40 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     
+    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
+        self.updateUI()
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        setPlayPauseButton()
+    }
+    
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
+        self.updateUI()
+        if let currentURI = player?.metadata.currentTrack?.uri {
+            let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
+            PlayerController.sharedController.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
+        }
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
+        if let duration = self.player?.metadata.currentTrack?.duration {
+            self.sliderPlaybackBar.value = Float(Double(position)/Double(duration))
+        }
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeRepeatStatus isRepeated: Bool) {
+        if isRepeated {
+            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
+        } else {
+            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
+        }
+    }
+    
+    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
+        navigationController?.popToRootViewControllerAnimated(true)
+    }
     
     /*
      // MARK: - Navigation
