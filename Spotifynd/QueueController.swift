@@ -178,6 +178,18 @@ class QueueController {
     }
     
     
+    func checkIfQueueMatchesSavedTracks(){
+        let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([self.queue[0],queue[1]], forUserWithAccessToken: PlayerController.authToken))
+        print(request)
+        SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+            print(response.description)
+            if data != nil {
+                let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments))
+                print(list as? [Bool])
+            }
+        }
+    }
+    
     // MARK: Helper Functions
     func getImageFromURL(imageURL: NSURL, completion: ((image: UIImage) -> Void)?){
         let data = NSData(contentsOfURL: imageURL)
@@ -191,4 +203,5 @@ class QueueController {
         }
         completion?(image: image)
     }
+    
 }

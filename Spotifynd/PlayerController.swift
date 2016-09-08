@@ -97,11 +97,6 @@ class PlayerController {
             }
         })
     }
-    
-    
-    // MARK: - Delegate Functions
-    
-    
-    
+
     
 }

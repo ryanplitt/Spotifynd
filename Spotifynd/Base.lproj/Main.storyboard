@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -338,8 +339,8 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <slider opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="cwE-eh-5af" customClass="mySlider" customModule="Spotifynd" customModuleProvider="target">
-                                <rect key="frame" x="65.5" y="335" width="283" height="31"/>
+                            <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="cwE-eh-5af" customClass="mySlider" customModule="Spotifynd" customModuleProvider="target">
+                                <rect key="frame" x="65.5" y="335" width="283" height="33"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="6jQ-Zr-pEw"/>
                                     <constraint firstAttribute="height" constant="30" id="t9F-Ne-pCh"/>
@@ -347,6 +348,7 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="6jQ-Zr-pEw"/>
+                                        <exclude reference="t9F-Ne-pCh"/>
                                     </mask>
                                 </variation>
                             </slider>
@@ -365,6 +367,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="cwE-eh-5af" firstAttribute="centerY" secondItem="MNY-QQ-3t9" secondAttribute="bottom" id="2Al-Oy-XDC"/>
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="top" secondItem="xrf-pU-IcT" secondAttribute="bottom" constant="4" id="8ER-JP-pum"/>
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leadingMargin" id="AM7-BL-fwY"/>
                             <constraint firstItem="cwE-eh-5af" firstAttribute="centerX" secondItem="fbZ-85-TOG" secondAttribute="centerX" id="APk-ku-hs6"/>
@@ -391,6 +394,7 @@
                                 <exclude reference="Usp-te-CUr"/>
                                 <exclude reference="jQJ-Px-pF3"/>
                                 <exclude reference="jqy-wf-LK2"/>
+                                <exclude reference="rlu-mW-adx"/>
                                 <exclude reference="AM7-BL-fwY"/>
                                 <exclude reference="zjo-Hm-SUt"/>
                             </mask>

@@ -76,9 +76,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func setupSlider() {
         sliderPlaybackBar.value = 0
-        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb")!, forState: .Normal)
         sliderPlaybackBar.thumbTintColor = .clearColor()
-        sliderPlaybackBar.tintColor = UIColor ( red: 0.0087, green: 0.9984, blue: 0.0468, alpha: 1.0 )
+        sliderPlaybackBar.tintColor = UIColor ( red: 0.0042, green: 0.1546, blue: 1.0, alpha: 1.0 )
     }
     
     
@@ -149,6 +148,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 print(error.localizedDescription)
             }
         })
+        QueueController.sharedController.checkIfQueueMatchesSavedTracks()
     }
     
     @IBAction func repeatButtonTapped(sender: AnyObject) {
@@ -185,7 +185,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         actionsheet.addAction(removeArtistTracks)
-        actionsheet.addAction(addMoreSongs)
+//        actionsheet.addAction(addMoreSongs)
         actionsheet.addAction(cancel)
         
         presentViewController(actionsheet, animated: true) { 
@@ -293,12 +293,8 @@ class mySlider: UISlider {
         super.init(coder: aDecoder)
     }
     
-    override func minimumValueImageRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectZero
-    }
-    
-    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-        return super.thumbRectForBounds(
-            bounds, trackRect: rect, value: value)
-    }
+//    
+//    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+//        return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
+//    }
 }
