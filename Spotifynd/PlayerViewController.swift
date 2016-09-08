@@ -272,6 +272,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
+        _ = (try? player?.stop())
         navigationController?.popToRootViewControllerAnimated(true)
     }
     

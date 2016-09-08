@@ -10,9 +10,11 @@ import UIKit
 
 class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
     
     @IBAction func logginWithSpotifyButtonTapped(sender: AnyObject) {
         showSpotifyAuthViewController()
@@ -24,13 +26,16 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
         
         let windowAuthVC = SPTAuthViewController.authenticationViewController()
-        windowAuthVC.delegate = self
+        windowAuthVC.clearCookies { 
+            windowAuthVC.delegate = self
         windowAuthVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         windowAuthVC.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
         self.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
         self.definesPresentationContext = true
         
         self.presentViewController(windowAuthVC, animated: true, completion: nil)
+        }
+        
     }
     
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didFailToLogin error: NSError!) {
@@ -54,6 +59,8 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     @IBAction func prepareForUnwind(segue: UIStoryboardSegue){
         
     }
+    
+    
     
     
     
