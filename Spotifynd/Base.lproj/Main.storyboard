@@ -27,7 +27,7 @@
                                     <action selector="logginWithSpotifyButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F4I-7x-Klg"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You need a spotify account to yada yada......" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="You need a Spotify Premium Account in order to use this application. Please sign in." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
                                 <rect key="frame" x="18" y="206" width="338" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -37,10 +37,17 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="7YV-GU-Qkk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="2Fs-6d-COd"/>
-                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="top" secondItem="5eL-cB-DTp" secondAttribute="bottom" constant="92" id="Jed-xC-GX6"/>
-                            <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="7YV-GU-Qkk" secondAttribute="centerX" id="Xq3-lr-6Ae"/>
+                            <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9j6-7U-4wj"/>
+                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="top" secondItem="5eL-cB-DTp" secondAttribute="bottom" constant="30" id="H2d-eu-DWQ"/>
+                            <constraint firstItem="5eL-cB-DTp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="NfA-Eu-AZq"/>
                             <constraint firstItem="7YV-GU-Qkk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qaU-us-6JK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5eL-cB-DTp" secondAttribute="trailing" id="vfK-ji-CJh"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="9j6-7U-4wj"/>
+                            </mask>
+                        </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
