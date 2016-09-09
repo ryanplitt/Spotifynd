@@ -45,9 +45,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if error != nil {
                     print(error.localizedDescription)
                     print(error)
+                    NSNotificationCenter.defaultCenter().postNotificationName("authSuccessful", object: nil)
                     return
                 }
-                if session != nil {
+                else if session != nil {
                     PlayerController.session = session
                     PlayerController.authToken = session.accessToken
                     NSNotificationCenter.defaultCenter().postNotificationName("authSuccessful", object: nil)

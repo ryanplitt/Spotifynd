@@ -17,6 +17,7 @@ class PlayerController {
     static var session: SPTSession?
     static var authToken: String?
     
+    
     // MARK: Shared Controller
     static let sharedController = PlayerController()
     

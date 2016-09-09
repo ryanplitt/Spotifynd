@@ -15,10 +15,23 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://evening-inlet-81851.herokuapp.com/swap")
+        SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://evening-inlet-81851.herokuapp.com/refresh")
         SPTAuth.defaultInstance().clientID = "bbd379abea604abca005f4eca064d395"
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "spotifynd://callback")
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope,SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.returnFromAppDelegateAuthSession), name: "authSuccessful", object: nil )
+    }
+    
+    func checkSessionAuth(){
+        guard let auth = SPTAuth.defaultInstance() else {print("The Auth Instance was nil") ; return}
+        guard let session = auth.session else {print("The session was nil") ; return }
+                if session.isValid() {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.performSegueWithIdentifier("toHomeScreen", sender: self)
+                PlayerController.sharedController.initializePlayer()
+            }
+        }
     }
     
     
@@ -27,6 +40,8 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         print(SPTAuth.spotifyApplicationIsInstalled())
         print(SPTAuth.supportsApplicationAuthentication())
         print(SPTAuth.defaultInstance().allowNativeLogin)
+        print(SPTAuth.defaultInstance().hasTokenSwapService)
+        print(SPTAuth.defaultInstance().hasTokenRefreshService)
     }
     
     func showSpotifyAuthViewController() {

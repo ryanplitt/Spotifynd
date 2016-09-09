@@ -8,11 +8,10 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
+class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +36,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         
         guard let searchController = searchController else {return}
         
-        resultsController.searchResultsView = self
+        resultsController.delegate = self
         
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = true
@@ -53,8 +52,15 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             SearchController.searchForArtist(text, completion: { 
                 resultsController.tableView.reloadData()
             })
-            
         }
+    }
+    
+    func didSelectedCell(partialArtist: SPTPartialArtist) {
+        self.dismissViewControllerAnimated(true) {
+            self.searchController?.searchBar.text = ""
+            self.performSegueWithIdentifier("fromSearch", sender: partialArtist)
+        }
+        
     }
     
     @IBAction func nowPlayingButtonTapped(sender: AnyObject) {
@@ -98,12 +104,8 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         }
         
         if segue.identifier == "fromSearch" {
-            guard SearchController.transferedResult.name.characters.count > 0 else {
-                print("There was no artist to transfer")
-                return
-            }
-            QueueController.sharedController.setQueueFromArtist(SearchController.transferedResult.uri.absoluteString, completion: nil)
-            SearchController.transferedResult = SPTPartialArtist()
+            let artist = sender as! SPTPartialArtist
+            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: nil)
         }
      }
 }

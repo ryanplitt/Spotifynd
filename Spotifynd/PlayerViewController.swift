@@ -112,7 +112,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @IBAction func collapseButtonTapped(sender: AnyObject) {
-        navigationController?.popViewControllerAnimated(true)
+        self.dismissViewControllerAnimated(true) { 
+        }
     }
     
     

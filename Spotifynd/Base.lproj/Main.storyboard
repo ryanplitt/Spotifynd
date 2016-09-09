@@ -90,7 +90,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="kut-kA-W6B" kind="show" identifier="fromTopArtistCell" id="ICG-RB-0Dg"/>
+                                            <segue destination="kut-kA-W6B" kind="modal" identifier="fromTopArtistCell" id="ICG-RB-0Dg"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -166,7 +166,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Now Playing" id="5io-Tf-a26">
                             <connections>
-                                <segue destination="kut-kA-W6B" kind="show" id="lqC-vu-1Bj"/>
+                                <segue destination="kut-kA-W6B" kind="presentation" id="lqC-vu-1Bj"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -174,7 +174,7 @@
                     <connections>
                         <outlet property="searchDisplayController" destination="cN5-zk-vSi" id="AGA-9a-hIQ"/>
                         <outlet property="tableView" destination="qlq-pT-yA9" id="l43-vS-Z8U"/>
-                        <segue destination="kut-kA-W6B" kind="show" identifier="fromSearch" id="pfS-YD-Czs"/>
+                        <segue destination="kut-kA-W6B" kind="presentation" identifier="fromSearch" id="pfS-YD-Czs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rYC-dZ-6Nd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -346,7 +346,7 @@
                                 </subviews>
                             </stackView>
                             <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="cwE-eh-5af" customClass="mySlider" customModule="Spotifynd" customModuleProvider="target">
-                                <rect key="frame" x="65.5" y="335" width="283" height="33"/>
+                                <rect key="frame" x="65.5" y="335" width="283" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="6jQ-Zr-pEw"/>
                                     <constraint firstAttribute="height" constant="30" id="t9F-Ne-pCh"/>
@@ -359,12 +359,11 @@
                                 </variation>
                             </slider>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ctJ-US-mwm">
-                                <rect key="frame" x="8" y="74" width="30" height="30"/>
+                                <rect key="frame" x="20" y="30" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="51Z-Im-6hc"/>
                                     <constraint firstAttribute="height" constant="30" id="aj8-N1-hAA"/>
                                 </constraints>
-                                <inset key="contentEdgeInsets" minX="0.0" minY="4" maxX="0.0" maxY="4"/>
                                 <state key="normal" title="Button" image="expand"/>
                                 <connections>
                                     <action selector="collapseButtonTapped:" destination="kut-kA-W6B" eventType="touchUpInside" id="H0n-dh-QL9"/>
@@ -377,7 +376,7 @@
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="top" secondItem="xrf-pU-IcT" secondAttribute="bottom" constant="4" id="8ER-JP-pum"/>
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leadingMargin" id="AM7-BL-fwY"/>
                             <constraint firstItem="cwE-eh-5af" firstAttribute="centerX" secondItem="fbZ-85-TOG" secondAttribute="centerX" id="APk-ku-hs6"/>
-                            <constraint firstItem="ctJ-US-mwm" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leadingMargin" constant="-12" id="BXf-15-Oec"/>
+                            <constraint firstItem="ctJ-US-mwm" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leadingMargin" id="BXf-15-Oec"/>
                             <constraint firstItem="ctJ-US-mwm" firstAttribute="top" secondItem="DUc-nX-Ub4" secondAttribute="bottom" constant="10" id="GCq-Tx-ZKb"/>
                             <constraint firstAttribute="trailing" secondItem="xrf-pU-IcT" secondAttribute="trailing" constant="8" id="JSb-0P-XhW"/>
                             <constraint firstItem="xrf-pU-IcT" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leading" constant="8" id="RyW-p6-J1V"/>
@@ -650,7 +649,7 @@ Long - approx 10 years</string>
     <resources>
         <image name="Settings" width="25" height="25"/>
         <image name="backButtonIcon" width="24" height="24"/>
-        <image name="expand" width="48" height="48"/>
+        <image name="expand" width="32" height="32"/>
         <image name="forwardButtonIcon" width="24" height="24"/>
         <image name="more" width="50" height="50"/>
         <image name="nowPlaying" width="26" height="26"/>
@@ -658,6 +657,6 @@ Long - approx 10 years</string>
         <image name="repeat-empty" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="lqC-vu-1Bj"/>
+        <segue reference="ICG-RB-0Dg"/>
     </inferredMetricsTieBreakers>
 </document>

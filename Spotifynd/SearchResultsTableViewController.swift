@@ -11,6 +11,7 @@ import UIKit
 class SearchResultsTableViewController: UITableViewController {
     
     var searchResultsView: UIViewController?
+    var delegate: SearchResultsControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +35,7 @@ class SearchResultsTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
-        let partialArtist = SearchController.results[indexPath.row]
-        SearchController.transferedResult = partialArtist
-        searchResultsView!.performSegueWithIdentifier("fromSearch", sender: cell)
-        self.dismissViewControllerAnimated(false, completion: nil)
+        delegate?.didSelectedCell(SearchController.results[indexPath.row])
     }
     
     /*
@@ -86,4 +83,8 @@ class SearchResultsTableViewController: UITableViewController {
      }
      */
     
+}
+
+protocol SearchResultsControllerDelegate {
+    func didSelectedCell(partialArtist: SPTPartialArtist)
 }
