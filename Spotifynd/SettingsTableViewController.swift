@@ -58,7 +58,10 @@ class SettingsTableViewController: UITableViewController {
 
     @IBAction func logOutButtonTapped(sender: AnyObject) {
         let player = PlayerViewController.sharedPlayer.player
-        player?.logout()
+        
+        AuthViewController.SPTAuthSharedViewController?.clearCookies({ 
+            player?.logout()
+        })
         self.performSegueWithIdentifier("toInitalViewController", sender: self)
     }
     // MARK: - Table view data source

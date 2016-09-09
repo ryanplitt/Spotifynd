@@ -151,6 +151,11 @@
 					FB0C64301D70BDEF00C409AB = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = H4854S58A9;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
