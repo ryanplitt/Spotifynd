@@ -18,7 +18,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         SPTAuth.defaultInstance().clientID = "bbd379abea604abca005f4eca064d395"
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "spotifynd://callback")
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope,SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.segueToHomeScreen), name: "authSuccessful", object: nil )
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.returnFromAppDelegateAuthSession), name: "authSuccessful", object: nil )
     }
     
     
@@ -61,10 +61,21 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func segueToHomeScreen(){
+    func returnFromAppDelegateAuthSession(){
+        if PlayerController.session != nil {
         dispatch_async(dispatch_get_main_queue()) {
             self.performSegueWithIdentifier("toHomeScreen", sender: self)
             PlayerController.sharedController.initializePlayer()
+        }
+        print(PlayerController.session?.expirationDate)
+        print(NSDate())
+        } else {
+            let alert = UIAlertController(title: "Error Logging In", message: "There was a problem using your Spotify app to log you in. Please use the apps login screen to log into Spotify/nNote that closing the spotify app before using the app may fix this in the future", preferredStyle: .Alert)
+            let okay = UIAlertAction(title: "Okay", style: .Default, handler: nil)
+            alert.addAction(okay)
+            presentViewController(alert, animated: true, completion: { 
+                self.showSpotifyAuthViewController()
+            })
         }
     }
     
