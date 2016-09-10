@@ -39,6 +39,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController?.navigationBarHidden = true
         
         setupSlider()
+        setupGestureRecognizers()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -62,6 +63,20 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 self.albumImage.image = image
             })
         }
+    }
+    
+    func setupGestureRecognizers(){
+        var swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToDownSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        albumImage.addGestureRecognizer(swipeDown)
+        
+        var swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToRightSwipeGesture:")
+        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        albumImage.addGestureRecognizer(swipeRight)
+        
+        var swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToLeftSwipeGesture:")
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        albumImage.addGestureRecognizer(swipeLeft)
     }
     
     func setupPlayer(){
@@ -116,6 +131,20 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func respondToDownSwipeGesture(gesture: UIGestureRecognizer) {
+        self.dismissViewControllerAnimated(true) {
+        }
+    }
+    
+    func respondToRightSwipeGesture(gesture: UIGestureRecognizer) {
+        self.backButtonTapped(self)
+    }
+    
+    func respondToLeftSwipeGesture(gesture: UIGestureRecognizer) {
+        self.nextButtonTapped(self)
+    }
+    
+
     
     @IBAction func playButtonTapped(sender: AnyObject) {
         guard player != nil else { return }
