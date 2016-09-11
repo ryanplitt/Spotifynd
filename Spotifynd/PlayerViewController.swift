@@ -45,7 +45,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(animated: Bool) {
         player?.delegate = self
         player?.playbackDelegate = self
-        if player?.playbackState?.isPlaying == true {
+        if player?.playbackState != nil {
             updateUI()
             setPlayPauseButton()
         }
@@ -66,15 +66,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func setupGestureRecognizers(){
-        var swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToDownSwipeGesture:")
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToDownSwipeGesture))
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         albumImage.addGestureRecognizer(swipeDown)
         
-        var swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToRightSwipeGesture:")
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToRightSwipeGesture))
         swipeRight.direction = UISwipeGestureRecognizerDirection.Right
         albumImage.addGestureRecognizer(swipeRight)
         
-        var swipeLeft = UISwipeGestureRecognizer(target: self, action: "respondToLeftSwipeGesture:")
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToLeftSwipeGesture))
         swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
         albumImage.addGestureRecognizer(swipeLeft)
     }
@@ -112,7 +112,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 let track = trackdata as! SPTTrack
                 let imageURL = track.album.largestCover.imageURL
                 QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
-                    self.albumImage.image = image
+                    self.albumImage.hidden = false
                 })
             }
         }

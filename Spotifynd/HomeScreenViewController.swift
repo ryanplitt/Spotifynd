@@ -8,11 +8,18 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate {
+class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate, SPTAudioStreamingPlaybackDelegate {
+    
+    @IBOutlet weak var albumArtImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var artistLabel: UILabel!
+    @IBOutlet weak var playPauseButtonOutlet: UIButton!
+    @IBOutlet weak var miniPlayerView: UIView!
+    
     
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
@@ -26,6 +33,12 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                 QueueController.sharedController.createSpotifyPlaylistFromQueueArray()
             }
         }
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        setupMiniPlayer()
+        setPlayPauseButton()
     }
     
     func setupSearchController(){
@@ -62,10 +75,88 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         }
         
     }
+    // MARK: Mini Player Setup & Controls
     
-    @IBAction func nowPlayingButtonTapped(sender: AnyObject) {
-        //
+    func setupMiniPlayer(){
+        guard PlayerController.sharedController.player != nil &&
+            PlayerController.sharedController.player?.playbackState != nil else {
+                miniPlayerView.hidden = true
+                return
+        }
+        miniPlayerView.hidden = false
+        updateUIforMiniPlayer()
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToUpSwipeGesture))
+        swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+        miniPlayerView.addGestureRecognizer(swipeUp)
+        
+        let tapOn = UITapGestureRecognizer(target: self, action: #selector(respondToTapGesture))
+        miniPlayerView.addGestureRecognizer(tapOn)
     }
+    
+
+    
+    func respondToUpSwipeGesture(gesture: UIGestureRecognizer) {
+        self.performSegueWithIdentifier("fromMiniPlayer", sender: self)
+    }
+    
+    func respondToTapGesture(gestur: UIGestureRecognizer) {
+        self.performSegueWithIdentifier("fromMiniPlayer", sender: self)
+    }
+    
+    func updateUIforMiniPlayer(){
+        guard let player = PlayerController.sharedController.player else {return}
+        guard let currentSong = player.metadata.currentTrack else {return}
+        
+        titleLabel.text = currentSong.name
+        artistLabel.text = currentSong.artistName
+        guard let session = PlayerController.session else {return}
+        SPTTrack.trackWithURI(NSURL(string: (currentSong.uri)), session: session) { (error, trackdata) in
+            let track = trackdata as! SPTTrack
+            let imageURL = track.album.largestCover.imageURL
+            QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
+                self.albumArtImageView.image = image
+            })
+        }
+    }
+    
+    @IBAction func playPauseButtonTapped(sender: AnyObject) {
+        guard let player = PlayerController.sharedController.player else {return}
+        guard player.playbackState != nil else {return}
+        player.setIsPlaying(!player.playbackState.isPlaying) { (error) in
+            if error != nil {
+                print("There was an error with the Play Pause Mini Player Button")
+            }
+        }
+    }
+    
+        func setPlayPauseButton(){
+        guard let player = PlayerController.sharedController.player else {return}
+        guard player.playbackState != nil else {
+            self.playPauseButtonOutlet.setImage(UIImage(named: "pause"), forState: .Normal)
+            return
+        }
+        if player.playbackState.isPlaying == true {
+            self.playPauseButtonOutlet.setImage(UIImage(named: "pause"), forState: .Normal)
+        } else {
+            self.playPauseButtonOutlet.setImage(UIImage(named: "play"), forState: .Normal)
+        }
+    }
+    
+    // MARK: Audio Streaming Delegates
+    
+    
+    audiostreaming
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
+        updateUIforMiniPlayer()
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        setPlayPauseButton()
+    }
+    
+    // MARK: - Table View Functions
     
     func updateTableView() {
         tableView.reloadData()
@@ -92,11 +183,11 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
         if segue.identifier == "fromTopArtistCell" {
             guard let indexPath = tableView.indexPathForSelectedRow else {return}
             let artist = SearchController.topArtists[indexPath.row]
@@ -107,5 +198,5 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             let artist = sender as! SPTPartialArtist
             QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: nil)
         }
-     }
+    }
 }
