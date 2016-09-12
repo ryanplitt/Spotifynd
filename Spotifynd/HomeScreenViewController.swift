@@ -8,7 +8,8 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate, SPTAudioStreamingPlaybackDelegate {
+class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate {
+
     
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -37,6 +38,9 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     override func viewWillAppear(animated: Bool) {
+        let player = PlayerController.sharedController.player
+        player?.delegate = self
+        player?.playbackDelegate = self
         setupMiniPlayer()
         setPlayPauseButton()
     }
@@ -106,7 +110,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     
     func updateUIforMiniPlayer(){
         guard let player = PlayerController.sharedController.player else {return}
-        guard let currentSong = player.metadata.currentTrack else {return}
+        guard let currentSong = player.metadata?.currentTrack else {return}
         
         titleLabel.text = currentSong.name
         artistLabel.text = currentSong.artistName
@@ -126,6 +130,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         player.setIsPlaying(!player.playbackState.isPlaying) { (error) in
             if error != nil {
                 print("There was an error with the Play Pause Mini Player Button")
+                self.setPlayPauseButton()
             }
         }
     }
@@ -146,7 +151,9 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     // MARK: Audio Streaming Delegates
     
     
-    audiostreaming
+    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
+        updateUIforMiniPlayer()
+    }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
         updateUIforMiniPlayer()

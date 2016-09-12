@@ -112,7 +112,10 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 let track = trackdata as! SPTTrack
                 let imageURL = track.album.largestCover.imageURL
                 QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
-                    self.albumImage.hidden = false
+                    dispatch_async(dispatch_get_main_queue(), { 
+                        self.albumImage.image = image
+                    })
+                    
                 })
             }
         }

@@ -30,9 +30,6 @@ class PlayerController {
     }
     
     // MARK: Initialize Player
-    init(){
-
-    }
     
     
     func initializePlayer() {
