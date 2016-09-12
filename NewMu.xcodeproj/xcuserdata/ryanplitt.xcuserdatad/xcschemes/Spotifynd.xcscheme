@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FB0C64301D70BDEF00C409AB"
-               BuildableName = "Spotifynd.app"
-               BlueprintName = "Spotifynd"
-               ReferencedContainer = "container:Spotifynd.xcodeproj">
+               BuildableName = "NewMu.app"
+               BlueprintName = "NewMu"
+               ReferencedContainer = "container:NewMu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FB0C64301D70BDEF00C409AB"
-            BuildableName = "Spotifynd.app"
-            BlueprintName = "Spotifynd"
-            ReferencedContainer = "container:Spotifynd.xcodeproj">
+            BuildableName = "NewMu.app"
+            BlueprintName = "NewMu"
+            ReferencedContainer = "container:NewMu.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FB0C64301D70BDEF00C409AB"
-            BuildableName = "Spotifynd.app"
-            BlueprintName = "Spotifynd"
-            ReferencedContainer = "container:Spotifynd.xcodeproj">
+            BuildableName = "NewMu.app"
+            BlueprintName = "NewMu"
+            ReferencedContainer = "container:NewMu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FB0C64301D70BDEF00C409AB"
-            BuildableName = "Spotifynd.app"
-            BlueprintName = "Spotifynd"
-            ReferencedContainer = "container:Spotifynd.xcodeproj">
+            BuildableName = "NewMu.app"
+            BlueprintName = "NewMu"
+            ReferencedContainer = "container:NewMu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

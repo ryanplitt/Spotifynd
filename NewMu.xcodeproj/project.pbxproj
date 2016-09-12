@@ -26,7 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FB0C64311D70BDEF00C409AB /* Spotifynd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spotifynd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB0C64311D70BDEF00C409AB /* NewMu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewMu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0C64341D70BDEF00C409AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FB0C64391D70BDEF00C409AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FB0C643B1D70BDEF00C409AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 		FB0C64321D70BDEF00C409AB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FB0C64311D70BDEF00C409AB /* Spotifynd.app */,
+				FB0C64311D70BDEF00C409AB /* NewMu.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -123,9 +123,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FB0C64301D70BDEF00C409AB /* Spotifynd */ = {
+		FB0C64301D70BDEF00C409AB /* NewMu */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FB0C64431D70BDEF00C409AB /* Build configuration list for PBXNativeTarget "Spotifynd" */;
+			buildConfigurationList = FB0C64431D70BDEF00C409AB /* Build configuration list for PBXNativeTarget "NewMu" */;
 			buildPhases = (
 				FB0C642D1D70BDEF00C409AB /* Sources */,
 				FB0C642E1D70BDEF00C409AB /* Frameworks */,
@@ -135,9 +135,9 @@
 			);
 			dependencies = (
 			);
-			name = Spotifynd;
+			name = NewMu;
 			productName = Spotifynd;
-			productReference = FB0C64311D70BDEF00C409AB /* Spotifynd.app */;
+			productReference = FB0C64311D70BDEF00C409AB /* NewMu.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -161,7 +161,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FB0C642C1D70BDEF00C409AB /* Build configuration list for PBXProject "Spotifynd" */;
+			buildConfigurationList = FB0C642C1D70BDEF00C409AB /* Build configuration list for PBXProject "NewMu" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -174,7 +174,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FB0C64301D70BDEF00C409AB /* Spotifynd */,
+				FB0C64301D70BDEF00C409AB /* NewMu */,
 			);
 		};
 /* End PBXProject section */
@@ -330,7 +330,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.RyanPlitt.Spotifynd;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = NewMu;
 				SWIFT_OBJC_BRIDGING_HEADER = "Spotifynd/Spotifynd-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -351,7 +351,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.RyanPlitt.Spotifynd;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = NewMu;
 				SWIFT_OBJC_BRIDGING_HEADER = "Spotifynd/Spotifynd-Bridging-Header.h";
 			};
 			name = Release;
@@ -359,7 +359,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FB0C642C1D70BDEF00C409AB /* Build configuration list for PBXProject "Spotifynd" */ = {
+		FB0C642C1D70BDEF00C409AB /* Build configuration list for PBXProject "NewMu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FB0C64411D70BDEF00C409AB /* Debug */,
@@ -368,7 +368,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FB0C64431D70BDEF00C409AB /* Build configuration list for PBXNativeTarget "Spotifynd" */ = {
+		FB0C64431D70BDEF00C409AB /* Build configuration list for PBXNativeTarget "NewMu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FB0C64441D70BDEF00C409AB /* Debug */,

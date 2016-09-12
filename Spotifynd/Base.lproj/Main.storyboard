@@ -10,7 +10,7 @@
         <!--Auth View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="authVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="AuthViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="authVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="AuthViewController" customModule="NewMu" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -57,10 +57,10 @@
             </objects>
             <point key="canvasLocation" x="828.5" y="250.5"/>
         </scene>
-        <!--Spotifynd-->
+        <!--NewMu-->
         <scene sceneID="v7B-HM-246">
             <objects>
-                <viewController storyboardIdentifier="homeVC" automaticallyAdjustsScrollViewInsets="NO" id="UBe-PR-m5O" customClass="HomeScreenViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="homeVC" automaticallyAdjustsScrollViewInsets="NO" id="UBe-PR-m5O" customClass="HomeScreenViewController" customModule="NewMu" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rl4-VR-wu5"/>
                         <viewControllerLayoutGuide type="bottom" id="eRj-5Q-5Cu"/>
@@ -123,13 +123,13 @@
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qjp-qU-Vi2">
                                                         <rect key="frame" x="0.0" y="0.0" width="255" height="30"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Ka-EM-vTh">
                                                         <rect key="frame" x="0.0" y="30" width="255" height="30"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
@@ -189,7 +189,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Spotifynd" id="LPP-PZ-AY0">
+                    <navigationItem key="navigationItem" title="NewMu" id="LPP-PZ-AY0">
                         <barButtonItem key="leftBarButtonItem" image="Settings" id="2cV-2x-oQP">
                             <connections>
                                 <segue destination="Hj4-63-SFy" kind="show" id="rCV-YI-b6i"/>
@@ -224,7 +224,7 @@
         <!--Player View Controller-->
         <scene sceneID="vDG-mV-iIY">
             <objects>
-                <viewController storyboardIdentifier="playerVC" id="kut-kA-W6B" customClass="PlayerViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="playerVC" id="kut-kA-W6B" customClass="PlayerViewController" customModule="NewMu" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="DUc-nX-Ub4"/>
                         <viewControllerLayoutGuide type="bottom" id="lh9-bq-RLj"/>
@@ -247,7 +247,7 @@
                                     <constraint firstAttribute="height" constant="300" id="24F-Ez-7z9"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="queueCell" id="HFL-F7-ClO" customClass="QueueTableViewCell" customModule="Spotifynd" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="queueCell" id="HFL-F7-ClO" customClass="QueueTableViewCell" customModule="NewMu" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="398" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HFL-F7-ClO" id="V1X-He-H0r">
@@ -329,14 +329,14 @@
                                         <rect key="frame" x="0.0" y="39" width="398" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f9V-rM-gQv">
-                                                <rect key="frame" x="0.0" y="0.0" width="79.5" height="30"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="80" height="30"/>
                                                 <state key="normal" image="repeat-empty"/>
                                                 <connections>
                                                     <action selector="repeatButtonTapped:" destination="kut-kA-W6B" eventType="touchUpInside" id="uO8-Il-Oaq"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PM7-DN-1z8">
-                                                <rect key="frame" x="79.5" y="0.0" width="79.5" height="30"/>
+                                                <rect key="frame" x="80" y="0.0" width="79" height="30"/>
                                                 <state key="normal" image="backButtonIcon"/>
                                                 <connections>
                                                     <action selector="backButtonTapped:" destination="kut-kA-W6B" eventType="touchUpInside" id="jqm-Ev-jzS"/>
@@ -350,14 +350,14 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4RY-kF-Ogs">
-                                                <rect key="frame" x="239" y="0.0" width="79.5" height="30"/>
+                                                <rect key="frame" x="239" y="0.0" width="79" height="30"/>
                                                 <state key="normal" image="forwardButtonIcon"/>
                                                 <connections>
                                                     <action selector="nextButtonTapped:" destination="kut-kA-W6B" eventType="touchUpInside" id="HMZ-pD-70p"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8zx-wH-2Sv">
-                                                <rect key="frame" x="318.5" y="0.0" width="79.5" height="30"/>
+                                                <rect key="frame" x="318" y="0.0" width="80" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="7Wz-Rb-fhU"/>
                                                     <constraint firstAttribute="height" constant="30" id="cf1-6n-EUp"/>
@@ -383,7 +383,7 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <slider opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="cwE-eh-5af" customClass="mySlider" customModule="Spotifynd" customModuleProvider="target">
+                            <slider opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="cwE-eh-5af" customClass="mySlider" customModule="NewMu" customModuleProvider="target">
                                 <rect key="frame" x="-2" y="389" width="418" height="51"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="6jQ-Zr-pEw"/>
@@ -465,7 +465,7 @@
         <!--Search Results Table View Controller-->
         <scene sceneID="RnL-Ci-ov4">
             <objects>
-                <tableViewController storyboardIdentifier="resultsVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zIZ-yk-EYE" customClass="SearchResultsTableViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="resultsVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zIZ-yk-EYE" customClass="SearchResultsTableViewController" customModule="NewMu" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Yp6-E0-20H">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -494,7 +494,7 @@
         <!--Settings-->
         <scene sceneID="iUp-TJ-M8j">
             <objects>
-                <tableViewController id="Hj4-63-SFy" customClass="SettingsTableViewController" customModule="Spotifynd" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="Hj4-63-SFy" customClass="SettingsTableViewController" customModule="NewMu" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="MJD-Cx-fhD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -631,7 +631,7 @@ Long - approx 10 years</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wVo-YY-ib9">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                                     <state key="normal" title="Log Out"/>
                                                     <connections>
                                                         <action selector="logOutButtonTapped:" destination="Hj4-63-SFy" eventType="touchUpInside" id="AoS-qL-6v4"/>
