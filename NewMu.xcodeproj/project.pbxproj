@@ -68,7 +68,7 @@
 				FB0C64481D70BF0A00C409AB /* SystemConfiguration.framework */,
 				FB0C64461D70BEF100C409AB /* AVFoundation.framework */,
 				FB0C647D1D75CCAE00C409AB /* Spotify.framework */,
-				FB0C64331D70BDEF00C409AB /* Spotifynd */,
+				FB0C64331D70BDEF00C409AB /* NewMu */,
 				FB0C64321D70BDEF00C409AB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,7 +81,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FB0C64331D70BDEF00C409AB /* Spotifynd */ = {
+		FB0C64331D70BDEF00C409AB /* NewMu */ = {
 			isa = PBXGroup;
 			children = (
 				FB0C644C1D70C0EA00C409AB /* Spotifynd-Bridging-Header.h */,
@@ -94,6 +94,7 @@
 				FB0C643D1D70BDEF00C409AB /* LaunchScreen.storyboard */,
 				FB0C64401D70BDEF00C409AB /* Info.plist */,
 			);
+			name = NewMu;
 			path = Spotifynd;
 			sourceTree = "<group>";
 		};

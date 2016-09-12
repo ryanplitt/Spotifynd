@@ -37,12 +37,12 @@
 			<string>https://evening-inlet-81851.herokuapp.com</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>https://evening-inlet-81851.herokuapp.com</string>
+				<string>evening-inlet-81851</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>spotify</string>
