@@ -16,6 +16,7 @@ class PlayerController {
     // MARK: Auth Controller Properties
     static var session: SPTSession?
     static var authToken: String?
+    static var sessionArchiveKey = "SessionArchiveKey"
     
     
     // MARK: Shared Controller
@@ -96,5 +97,14 @@ class PlayerController {
         })
     }
 
+    
+    // MARK: Archiving/Unarchiving Data
+    
+    func saveSessionToUserDefaults(session: SPTSession) {
+        let sessionData = NSKeyedArchiver.archivedDataWithRootObject(session)
+        NSUserDefaults.standardUserDefaults().setObject(sessionData, forKey: PlayerController.sessionArchiveKey)
+    }
+    
+    
     
 }

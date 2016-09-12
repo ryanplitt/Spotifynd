@@ -49,7 +49,7 @@ class QueueController {
         }
     }
     
-
+    
     // MARK: Queue Management
     
     func removeTracksArtistFromQueue(artistName: String, completion: () -> Void) {
@@ -159,16 +159,16 @@ class QueueController {
         }
     }
     
-        func addMoreSongsBasedOnThisArtist() {
+    func addMoreSongsBasedOnThisArtist() {
         
         // TODO:
     }
     
-        func queueSongToArray(track: SPTTrack) {
+    func queueSongToArray(track: SPTTrack) {
         queue.append(track)
     }
     
-        func removeTrackFromQueue(track: SPTTrack) {
+    func removeTrackFromQueue(track: SPTTrack) {
         let index = queue.indexOf(track)
         guard index != nil else {
             print("Could not find track in queue.")
@@ -177,15 +177,36 @@ class QueueController {
         queue.removeAtIndex(index!)
     }
     
-    
+    // TODO: - 
     func checkIfQueueMatchesSavedTracks(){
-        let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([self.queue[0],queue[1]], forUserWithAccessToken: PlayerController.authToken))
-        print(request)
-        SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
-            print(response.description)
-            if data != nil {
-                let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments))
-                print(list as? [Bool])
+        for song in queue {
+            let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
+            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+                if data != nil {
+                    guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                    if list.first == true {
+                        self.removeTrackFromQueue(song)
+                    }
+                }
+            }
+        }
+    }
+    
+    func checkIfQueueMatchesSavedArtists(){
+        for song in queue {
+            let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
+            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+                if data != nil {
+                    guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                    if list.first == true {
+                        let artistsSong = song
+                        for song in self.queue {
+                            if song.artists.first?.identifier == artistsSong.artists.first?.identifier {
+                                self.removeTrackFromQueue(song)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

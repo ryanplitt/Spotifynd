@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 else if session != nil {
                     PlayerController.session = session
                     PlayerController.authToken = session.accessToken
+                    PlayerController.sharedController.saveSessionToUserDefaults(session)
                     NSNotificationCenter.defaultCenter().postNotificationName("authSuccessful", object: nil)
                 }
             })

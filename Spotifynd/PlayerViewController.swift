@@ -58,8 +58,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func setupInitialPlayerAppearance() {
         PlayerController.sharedController.initializeFirstTrackForPlaying { (track) in
             self.titleLabel.text = track.name
-            self.artistLabel.text = track.artists.first?.name
-            QueueController.sharedController.getImageFromURL(track.album.largestCover.imageURL, completion: { (image) in
+            self.artistLabel.text = track.artists?.first?.name
+            guard let url = track.album?.largestCover?.imageURL else {return}
+            QueueController.sharedController.getImageFromURL(url, completion: { (image) in
                 self.albumImage.image = image
             })
         }
@@ -110,8 +111,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             SPTTrack.trackWithURI(NSURL(string: (self.player?.metadata.currentTrack?.uri)!), session: PlayerController.session) { (error, trackdata) in
                 let track = trackdata as! SPTTrack
-                let imageURL = track.album.largestCover.imageURL
-                QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
+                let imageURL = track.album?.largestCover?.imageURL
+                guard let image = imageURL else {return}
+                QueueController.sharedController.getImageFromURL(image, completion: { (image) in
                     dispatch_async(dispatch_get_main_queue(), { 
                         self.albumImage.image = image
                     })
@@ -181,7 +183,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 print(error.localizedDescription)
             }
         })
-        QueueController.sharedController.checkIfQueueMatchesSavedTracks()
+//        QueueController.sharedController.checkIfQueueMatchesSavedArtists()
     }
     
     @IBAction func repeatButtonTapped(sender: AnyObject) {

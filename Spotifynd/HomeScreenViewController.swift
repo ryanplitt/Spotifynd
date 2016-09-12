@@ -117,6 +117,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         guard let session = PlayerController.session else {return}
         SPTTrack.trackWithURI(NSURL(string: (currentSong.uri)), session: session) { (error, trackdata) in
             let track = trackdata as! SPTTrack
+            guard let image = track.album?.largestCover?.imageURL else {return}
             let imageURL = track.album.largestCover.imageURL
             QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
                 self.albumArtImageView.image = image

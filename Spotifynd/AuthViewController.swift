@@ -12,6 +12,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
     static var SPTAuthSharedViewController: SPTAuthViewController?
     
+    var hasValidSession: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,20 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "spotifynd://callback")
         SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope,SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.returnFromAppDelegateAuthSession), name: "authSuccessful", object: nil )
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if let sessionData = NSUserDefaults.standardUserDefaults().objectForKey(PlayerController.sessionArchiveKey) as? NSData{
+            let session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as! SPTSession
+            if session.isValid() {
+                PlayerController.session = session
+                PlayerController.authToken = session.accessToken
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.performSegueWithIdentifier("toHomeScreen", sender: self)
+                    PlayerController.sharedController.initializePlayer()
+                }
+            }
+        }
     }
     
     func checkSessionAuth(){
@@ -36,6 +51,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
     
     @IBAction func logginWithSpotifyButtonTapped(sender: AnyObject) {
+
         showSpotifyAuthViewController()
         print(SPTAuth.spotifyApplicationIsInstalled())
         print(SPTAuth.supportsApplicationAuthentication())
@@ -66,6 +82,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     func authenticationViewController(authenticationViewController: SPTAuthViewController!, didLoginWithSession session: SPTSession!) {
         PlayerController.session = session
         PlayerController.authToken = session.accessToken
+        PlayerController.sharedController.saveSessionToUserDefaults(session)
         dispatch_async(dispatch_get_main_queue()) {
             self.performSegueWithIdentifier("toHomeScreen", sender: self)
             PlayerController.sharedController.initializePlayer()
@@ -85,12 +102,12 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         print(PlayerController.session?.expirationDate)
         print(NSDate())
         } else {
-            let alert = UIAlertController(title: "Error Logging In", message: "There was a problem using your Spotify app to log you in. Please use the apps login screen to log into Spotify/nNote that closing the spotify app before using the app may fix this in the future", preferredStyle: .Alert)
-            let okay = UIAlertAction(title: "Okay", style: .Default, handler: nil)
-            alert.addAction(okay)
-            presentViewController(alert, animated: true, completion: { 
+            let alert = UIAlertController(title: "Error Logging In", message: "There was a problem using your Spotify app to log you in. Please use the apps login screen to log into Spotify. Note that closing the spotify app before using the app may fix this in the future", preferredStyle: .Alert)
+            let okay = UIAlertAction(title: "Okay", style: .Default, handler: { (_) in
                 self.showSpotifyAuthViewController()
             })
+            alert.addAction(okay)
+            presentViewController(alert, animated: true, completion: nil)
         }
     }
     
