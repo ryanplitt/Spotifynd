@@ -39,12 +39,11 @@ class PlayerController {
         player?.loginWithAccessToken(PlayerController.authToken)
     }
     
-    func setupPlayer() {
-        
+    func setupPlayerFromQueue() {
         QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
             print("The operation has completed")
             self.initializePlaylistForPlayback({
-                print(self.player?.playbackState)
+                print(self.player?.playbackState.description)
             })
         }
         
@@ -52,40 +51,41 @@ class PlayerController {
     }
     
     func initializePlaylistForPlayback(completion: (() -> Void)?){
-        let qualityOfService = QOS_CLASS_BACKGROUND
-        let backgroundQueue = dispatch_get_global_queue(qualityOfService, 0)
-        dispatch_async(backgroundQueue) {
-            SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: PlayerController.session) { (error, playlistData) in
-                let playlist = playlistData as! SPTPlaylistSnapshot
-                let firstpage = playlist.firstTrackPage
-                guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
-                guard firstSong.name == QueueController.sharedController.queue.first?.name else {
+        SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: PlayerController.session) { (error, playlistData) in
+            let playlist = playlistData as! SPTPlaylistSnapshot
+            let firstpage = playlist.firstTrackPage
+            guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
+            guard firstSong.name == QueueController.sharedController.queue.first?.name else {
+                sleep(1)
+                print("The tracks didn't match")
+                self.initializePlaylistForPlayback(nil)
+                return
+            }
+            self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                if error != nil {
+                    print("There was an error preparing the playlist")
                     sleep(1)
-                    print("The tracks didn't match")
                     self.initializePlaylistForPlayback(nil)
-                    return
                 }
-                self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                self.player?.setIsPlaying(false, callback: { (error) in
                     if error != nil {
-                        print("There was an error preparing the playlist")
-                        sleep(1)
-                        self.initializePlaylistForPlayback(nil)
+                        print("There was an error setting the player to pause.")
                     }
-                    self.player?.setIsPlaying(false, callback: { (error) in
-                        if error != nil {
-                            print("There was an error setting the player to pause.")
-                        }
-                    })
                     completion?()
-                }
+                })
             }
         }
     }
     
-    func initializeFirstTrackForPlaying(completionFirstTrack: (SPTTrack) -> Void){
+    func initializeFirstTrackForPlaying(completionFirstTrack: ((SPTTrack) -> Void)?){
+        guard player != nil && QueueController.sharedController.queue.count > 0 else {
+            sleep(1)
+            initializeFirstTrackForPlaying(nil)
+            return
+        }
         SPTTrack.trackWithURI(QueueController.sharedController.queue[0].uri, session: PlayerController.session) { (error, trackData) in
             let track = trackData as! SPTTrack
-            completionFirstTrack(track)
+            completionFirstTrack?(track)
         }
     }
     
@@ -96,7 +96,7 @@ class PlayerController {
             }
         })
     }
-
+    
     
     // MARK: Archiving/Unarchiving Data
     

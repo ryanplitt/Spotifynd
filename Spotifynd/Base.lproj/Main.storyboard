@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7YV-GU-Qkk">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7YV-GU-Qkk">
                                 <rect key="frame" x="24" y="285" width="327" height="98"/>
                                 <color key="backgroundColor" red="0.0" green="1" blue="0.18379173432082263" alpha="1" colorSpace="calibratedRGB"/>
                                 <inset key="contentEdgeInsets" minX="20" minY="10" maxX="20" maxY="10"/>
@@ -28,7 +28,7 @@
                                     <action selector="logginWithSpotifyButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F4I-7x-Klg"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="You need a Spotify Premium Account in order to use this application. Please sign in." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="You need a Spotify Premium Account in order to use this application. Please sign in." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
                                 <rect key="frame" x="18" y="206" width="338" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -40,12 +40,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="5eL-cB-DTp" firstAttribute="top" secondItem="xg3-uh-CaZ" secondAttribute="bottom" constant="64" id="7bz-Vb-Z5d"/>
                             <constraint firstItem="xg3-uh-CaZ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="8E5-vb-fyI"/>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9j6-7U-4wj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="xg3-uh-CaZ" secondAttribute="trailing" constant="8" id="I53-zP-4KG"/>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="NfA-Eu-AZq"/>
                             <constraint firstItem="xg3-uh-CaZ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="8" id="Uns-Yp-OKA"/>
+                            <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="7YV-GU-Qkk" secondAttribute="centerX" id="td9-MV-BAW"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5eL-cB-DTp" secondAttribute="trailing" id="vfK-ji-CJh"/>
+                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="top" secondItem="5eL-cB-DTp" secondAttribute="bottom" constant="58" id="zqo-Jy-BoF"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -95,7 +98,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="kut-kA-W6B" kind="modal" identifier="fromTopArtistCell" id="ICG-RB-0Dg"/>
+                                            <segue destination="kut-kA-W6B" kind="presentation" identifier="fromTopArtistCell" id="ICG-RB-0Dg"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -704,6 +707,6 @@ Long - approx 10 years</string>
         <image name="repeat-empty" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2Su-3S-Sue"/>
+        <segue reference="ICG-RB-0Dg"/>
     </inferredMetricsTieBreakers>
 </document>

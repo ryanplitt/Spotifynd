@@ -32,17 +32,17 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "queueUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "setupAppearance", object: nil)
         
         self.navigationController?.navigationBarHidden = true
         
-        setupSlider()
         setupGestureRecognizers()
     }
     
     override func viewWillAppear(animated: Bool) {
+        setupSlider()
         player?.delegate = self
         player?.playbackDelegate = self
         if player?.playbackState != nil {
@@ -53,17 +53,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewWillDisappear(animated: Bool) {
         navigationController?.navigationBarHidden = false
-    }
-    
-    func setupInitialPlayerAppearance() {
-        PlayerController.sharedController.initializeFirstTrackForPlaying { (track) in
-            self.titleLabel.text = track.name
-            self.artistLabel.text = track.artists?.first?.name
-            guard let url = track.album?.largestCover?.imageURL else {return}
-            QueueController.sharedController.getImageFromURL(url, completion: { (image) in
-                self.albumImage.image = image
-            })
-        }
     }
     
     func setupGestureRecognizers(){
@@ -80,8 +69,20 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         albumImage.addGestureRecognizer(swipeLeft)
     }
     
+    
+    func setupInitialPlayerAppearance() {
+        PlayerController.sharedController.initializeFirstTrackForPlaying { (track) in
+            self.titleLabel.text = track.name
+            self.artistLabel.text = track.artists?.first?.name
+            guard let url = track.album?.largestCover?.imageURL else {return}
+            QueueController.sharedController.getImageFromURL(url, completion: { (image) in
+                self.albumImage.image = image
+            })
+        }
+    }
+    
     func setupPlayer(){
-        PlayerController.sharedController.setupPlayer()
+        PlayerController.sharedController.setupPlayerFromQueue()
     }
     
     func initializePlaylistForPlayback(){
@@ -149,7 +150,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.nextButtonTapped(self)
     }
     
-
+    
     
     @IBAction func playButtonTapped(sender: AnyObject) {
         guard player != nil else { return }
@@ -183,7 +184,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 print(error.localizedDescription)
             }
         })
-//        QueueController.sharedController.checkIfQueueMatchesSavedArtists()
+        //        QueueController.sharedController.checkIfQueueMatchesSavedArtists()
     }
     
     @IBAction func repeatButtonTapped(sender: AnyObject) {
@@ -213,14 +214,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .Default) { (_) in
-            // TODO: Add More songs using QueueController function
+            QueueController.sharedController.addMoreSongsBasedOnThisArtist()
         }
         
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in
         }
         
         actionsheet.addAction(removeArtistTracks)
-//        actionsheet.addAction(addMoreSongs)
+        //        actionsheet.addAction(addMoreSongs)
         actionsheet.addAction(cancel)
         
         presentViewController(actionsheet, animated: true) { 
@@ -329,8 +330,8 @@ class mySlider: UISlider {
         super.init(coder: aDecoder)
     }
     
-//    
-//    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-//        return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
-//    }
+    //    
+    //    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+    //        return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
+    //    }
 }

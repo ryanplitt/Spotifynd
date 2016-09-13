@@ -199,12 +199,22 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         if segue.identifier == "fromTopArtistCell" {
             guard let indexPath = tableView.indexPathForSelectedRow else {return}
             let artist = SearchController.topArtists[indexPath.row]
-            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: nil)
+            if QueueController.sharedController.queue.count > 0 {
+                
+            }
+            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: { 
+                PlayerController.sharedController.setupPlayerFromQueue()
+                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+            })
         }
         
         if segue.identifier == "fromSearch" {
             let artist = sender as! SPTPartialArtist
-            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: nil)
+            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: {
+                PlayerController.sharedController.setupPlayerFromQueue()
+                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+            })
+        
         }
     }
 }
