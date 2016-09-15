@@ -16,6 +16,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var playPauseButtonOutlet: UIButton!
     @IBOutlet weak var miniPlayerView: UIView!
+    @IBOutlet weak var progressView: UIProgressView!
     
     
     @IBOutlet weak var tableView: UITableView!
@@ -190,7 +191,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
-    func checkTimeForSegue(segueIdentifier: String, completion: ((success: Bool) -> Void)?){
+    func checkTimeForSegue(segueIdentifier: String, sender: AnyObject?, completion: ((success: Bool) -> Void)?){
             if QueueController.sharedController.timeStampOfPlaylistMade == nil {
                 QueueController.sharedController.timeStampOfPlaylistMade = NSDate()
                 completion?(success: true)
@@ -200,7 +201,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                 let alertController = UIAlertController(title: "We're Sorry", message: "Due to Spotify restrictions you can only change your playlist every 60 seconds. Please wait \(Int(60 + timeDifference!)) seconds longer.", preferredStyle: .Alert)
                 let okay = UIAlertAction(title: "Okay", style: .Cancel, handler: nil)
                 let tryAgain = UIAlertAction(title: "Try Again", style: .Default, handler: { (_) in
-                    self.performSegueWithIdentifier(segueIdentifier, sender: self)
+                    self.performSegueWithIdentifier(segueIdentifier, sender: sender)
                 })
                 
                 alertController.addAction(okay)
@@ -221,7 +222,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "fromTopArtistCell" {
-            checkTimeForSegue(segue.identifier!, completion: { (success) in
+            checkTimeForSegue(segue.identifier!, sender: sender, completion: { (success) in
                 if success {
                     guard let indexPath = self.tableView.indexPathForSelectedRow else {return}
                     let artist = SearchController.topArtists[indexPath.row]
@@ -238,7 +239,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
             })
         }
         if segue.identifier == "fromSearch" {
-            checkTimeForSegue(segue.identifier!, completion: { (success) in
+            checkTimeForSegue(segue.identifier!,sender: sender, completion: { (success) in
                 if success {
                     let artist = sender as! SPTPartialArtist
                     QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString!, completion: {

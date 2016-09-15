@@ -106,23 +106,32 @@ class PlayerController {
         print(player?.metadata?.currentTrack?.name)
     }
     
-    func isSongInSavedTracks(){
-        guard let songURI = player?.metadata.currentTrack?.uri else {return}
-        SPTYourMusic.savedTracksContains([songURI], forUserWithAccessToken: PlayerController.authToken) { (error, data) in
-            guard let callback = data else {return}
-            print(callback as? [Bool])
+    func isSongInSavedTracks(completion: ((success: Bool) -> Void)?){
+        guard let songURI = NSURL(string: (player?.metadata.currentTrack?.uri)!) else {
+            return
+        }
+        let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([songURI], forUserWithAccessToken: PlayerController.authToken))
+        SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+            if data != nil {
+                guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                if list.first == false {
+                    completion?(success: true)
+                }
+            }
         }
     }
     
     func addSongToSavedTracks(){
-        guard let songURI = player?.metadata.currentTrack?.uri else {return}
-        SPTYourMusic.saveTracks([songURI], forUserWithAccessToken: PlayerController.authToken) { (error, _) in
+        guard let songURI = NSURL(string: (player?.metadata.currentTrack?.uri)!) else {return}
+        let request = (try? SPTYourMusic.createRequestForSavingTracks([songURI], forUserWithAccessToken: PlayerController.authToken))
+        SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
             if error != nil {
                 print(error)
                 print(error.localizedDescription)
-                print("there was an error saving the track")
-            } else {
-                print("The track was saved")
+                print("There was a problem adding the song to the saved tracks")
+            }
+            if response != nil {
+                print(response)
             }
         }
     }

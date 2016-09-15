@@ -20,7 +20,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         SPTAuth.defaultInstance().tokenRefreshURL = NSURL(string: "https://evening-inlet-81851.herokuapp.com/refresh")
         SPTAuth.defaultInstance().clientID = "bbd379abea604abca005f4eca064d395"
         SPTAuth.defaultInstance().redirectURL = NSURL(string: "spotifynd://callback")
-        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope,SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthUserLibraryReadScope,SPTAuthPlaylistReadPrivateScope, SPTAuthUserLibraryModifyScope ,SPTAuthPlaylistModifyPrivateScope, "user-top-read"]
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.returnFromAppDelegateAuthSession), name: "authSuccessful", object: nil )
     }
     

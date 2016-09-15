@@ -105,7 +105,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func updateUI() {
         updateTableView()
         if self.player?.metadata == nil || self.player?.metadata.currentTrack == nil {
-                        self.albumImage.image = nil
+//                        self.albumImage.image = nil
         } else {
             
             self.nextButton.enabled = self.player?.metadata.nextTrack != nil
@@ -183,7 +183,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @IBAction func nextButtonTapped(sender: AnyObject) {
-        PlayerController.sharedController.isSongInSavedTracks()
         player?.skipNext({ (error) in
             if error != nil {
                 print(error.localizedDescription)
@@ -230,7 +229,13 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         actionsheet.addAction(removeArtistTracks)
         //        actionsheet.addAction(addMoreSongs)
-        actionsheet.addAction(addToSaved)
+        
+        PlayerController.sharedController.isSongInSavedTracks { (success) in
+            if success{
+                actionsheet.addAction(addToSaved)
+            }
+        }
+        
         actionsheet.addAction(cancel)
         
         presentViewController(actionsheet, animated: true) { 

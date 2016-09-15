@@ -251,7 +251,6 @@ class QueueController {
         queue.removeAtIndex(index!)
     }
     
-    // TODO: - 
     func checkIfQueueMatchesSavedTracks(){
         for song in queue {
             let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
