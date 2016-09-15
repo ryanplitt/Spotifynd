@@ -23,6 +23,8 @@ class QueueController {
         }
     }
     
+    var timeStampOfPlaylistMade: NSDate?
+    
     // MARK: Home Screen Functions
     
     
@@ -55,11 +57,8 @@ class QueueController {
                 self.getTopTracksForArtists(artistsArray, completion: { (arrayOfTracks) in // Step 3
                     self.randomizeArrayOfTracks(arrayOfTracks, completion: { (randomizedArray) in // Step 4
 //                        self.checkIfQueueIsInPlaylist({ (success) in // Step 5
-//                            if !success {
                                 self.queue = randomizedArray
                                 completion?()
-//                            }
-//                        })
                     })
                 })
             })
@@ -106,15 +105,14 @@ class QueueController {
             })
         }
         dispatch_group_notify(topArtistGroup, dispatch_get_main_queue()) { 
-            if counter == 20 {
+            if counter == artists.count {
                 completion(arrayOfTracks: tracks)
             }
         }
-        
     }
     
     //Helper Method for Step 3
-    func getArtistTopTracks(artist: SPTArtist, numberOfTracks: Int = 5, completion: (tracksArray: [SPTTrack]) -> Void){
+    func getArtistTopTracks(artist: SPTArtist, numberOfTracks: Int = 3, completion: (tracksArray: [SPTTrack]) -> Void){
         let artistTopTrackGroup = dispatch_group_create()
         artist.requestTopTracksForTerritory("US", withAccessToken: PlayerController.authToken) { (error, trackslist) in
             dispatch_group_enter(artistTopTrackGroup)
@@ -163,7 +161,7 @@ class QueueController {
     
     
     func createSpotifyPlaylistFromQueueArray() {
-        SPTPlaylistList.createPlaylistWithName("NewMu", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
+        SPTPlaylistList.createPlaylistWithName("\(NSUUID())", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
             if error != nil {
                 print("There was an error making the playlist")
             }
@@ -184,16 +182,25 @@ class QueueController {
             updateExistingSpotifyPlaylistFromQueueArray(nil)
             return
         }
-        dispatch_async(dispatch_get_main_queue()) { 
-            self.spotifyndPlaylist?.replaceTracksInPlaylist(self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
-                if error != nil {
-                    print("There was an error replacing the playlist..")
-                } else {
-                    print("Request Sent")
-                }
-                completion?()
-            })
-        }
+                self.spotifyndPlaylist?.replaceTracksInPlaylist(self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
+                    if error != nil {
+                        print("There was an error replacing the playlist..")
+                    } else {
+                        print("Request Sent")
+                    }
+                    completion?()
+                })
+//        let tracks = self.queue.flatMap({$0.uri.absoluteString})
+//        let jsonDictionary = ["uris":tracks]
+//        SPTUser.requestCurrentUserWithAccessToken(PlayerController.authToken) { (error, userData) in
+//            let user = userData as! SPTUser
+//            print(user)
+//            
+//            let request = (try? SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/users/\(user.canonicalUserName)/playlists/2A7O6eT1jAjO0DQ7KoXuf8/tracks"), withAccessToken: PlayerController.authToken, httpMethod: "PUT", values: jsonDictionary, valueBodyIsJSON: true, sendDataAsQueryString: false))
+//            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+//                completion?()
+//            }
+//        }
     }
     
     
@@ -223,13 +230,12 @@ class QueueController {
     }
     
     func addMoreSongsBasedOnThisArtist() {
-        //        guard let currentTrack = PlayerController.sharedController.player?.metadata?.currentTrack else {return}
-        //        let arrayOfURI = queue.flatMap({$0.uri.absoluteURL})
-        //        guard let index = arrayOfURI.indexOf(NSURL(string:currentTrack.uri)!) else {return}
-        //        self.setQueueFromArtist(currentTrack.artistUri, startingIndex: index) { 
-        //            //completion
-        //        }
-        
+        //                guard let currentTrack = PlayerController.sharedController.player?.metadata?.currentTrack else {return}
+        //                let arrayOfURI = queue.flatMap({$0.uri.absoluteURL})
+        //                guard let index = arrayOfURI.indexOf(NSURL(string:currentTrack.uri)!) else {return}
+        //                self.setQueueFromArtist(currentTrack.artistUri, startingIndex: index) {
+        //                    //completion
+        //                }
     }
     
     func queueSongToArray(track: SPTTrack) {

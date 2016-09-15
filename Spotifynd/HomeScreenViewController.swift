@@ -117,8 +117,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         guard let session = PlayerController.session else {return}
         SPTTrack.trackWithURI(NSURL(string: (currentSong.uri)), session: session) { (error, trackdata) in
             let track = trackdata as! SPTTrack
-            guard let image = track.album?.largestCover?.imageURL else {return}
-            let imageURL = track.album.largestCover.imageURL
+            guard let imageURL = track.album?.largestCover?.imageURL else {return}
             QueueController.sharedController.getImageFromURL(imageURL, completion: { (image) in
                 self.albumArtImageView.image = image
             })
@@ -191,30 +190,62 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         return cell
     }
     
+    func checkTimeForSegue(segueIdentifier: String, completion: ((success: Bool) -> Void)?){
+            if QueueController.sharedController.timeStampOfPlaylistMade == nil {
+                QueueController.sharedController.timeStampOfPlaylistMade = NSDate()
+                completion?(success: true)
+            }else {
+                let timeDifference = QueueController.sharedController.timeStampOfPlaylistMade?.timeIntervalSinceNow
+            guard timeDifference < -60 else {
+                let alertController = UIAlertController(title: "We're Sorry", message: "Due to Spotify restrictions you can only change your playlist every 60 seconds. Please wait \(Int(60 + timeDifference!)) seconds longer.", preferredStyle: .Alert)
+                let okay = UIAlertAction(title: "Okay", style: .Cancel, handler: nil)
+                let tryAgain = UIAlertAction(title: "Try Again", style: .Default, handler: { (_) in
+                    self.performSegueWithIdentifier(segueIdentifier, sender: self)
+                })
+                
+                alertController.addAction(okay)
+                alertController.addAction(tryAgain)
+                
+                print(timeDifference)
+                presentViewController(alertController, animated: true, completion: nil)
+                completion?(success: false)
+                return
+            }
+            QueueController.sharedController.timeStampOfPlaylistMade = NSDate()
+                completion?(success: true)
+        }
+    }
+    
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
         if segue.identifier == "fromTopArtistCell" {
-            guard let indexPath = tableView.indexPathForSelectedRow else {return}
-            let artist = SearchController.topArtists[indexPath.row]
-            if QueueController.sharedController.queue.count > 0 {
+            checkTimeForSegue(segue.identifier!, completion: { (success) in
+                if success {
+                    guard let indexPath = self.tableView.indexPathForSelectedRow else {return}
+                    let artist = SearchController.topArtists[indexPath.row]
+                    PlayerController.sharedController.player?.setIsPlaying(false, callback: { (error) in
+                        dispatch_async(dispatch_get_main_queue(), {
+                            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString!, completion: {
+                                NSNotificationCenter.defaultCenter().postNotificationName("setupPlayer", object: nil)
+                                //                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+                            })
+                        })
+                    })
+                }
                 
-            }
-            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: { 
-                PlayerController.sharedController.setupPlayerFromQueue()
-                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
             })
         }
-        
         if segue.identifier == "fromSearch" {
-            let artist = sender as! SPTPartialArtist
-            QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString, completion: {
-                PlayerController.sharedController.setupPlayerFromQueue()
-                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+            checkTimeForSegue(segue.identifier!, completion: { (success) in
+                if success {
+                    let artist = sender as! SPTPartialArtist
+                    QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString!, completion: {
+                        NSNotificationCenter.defaultCenter().postNotificationName("setupPlayer", object: nil)
+                    })
+                }
             })
-        
         }
     }
 }

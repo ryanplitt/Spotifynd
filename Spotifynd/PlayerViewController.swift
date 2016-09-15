@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
@@ -32,8 +33,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "queueUpdated", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "setupPlayer", object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "setupAppearance", object: nil)
         
         self.navigationController?.navigationBarHidden = true
@@ -82,7 +83,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func setupPlayer(){
-        PlayerController.sharedController.setupPlayerFromQueue()
+        PlayerController.sharedController.setupPlayerFromQueue { 
+            
+        }
     }
     
     func initializePlaylistForPlayback(){
@@ -102,7 +105,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func updateUI() {
         updateTableView()
         if self.player?.metadata == nil || self.player?.metadata.currentTrack == nil {
-            //            self.albumImage.image = nil
+                        self.albumImage.image = nil
         } else {
             
             self.nextButton.enabled = self.player?.metadata.nextTrack != nil
@@ -117,8 +120,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 QueueController.sharedController.getImageFromURL(image, completion: { (image) in
                     dispatch_async(dispatch_get_main_queue(), { 
                         self.albumImage.image = image
+                        PlayerController.sharedController.currentSongAlbumArtwork = image
+                        PlayerController.sharedController.setMPNowPlayingInfoCenterForTrack(track)
                     })
-                    
                 })
             }
         }
@@ -179,12 +183,12 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @IBAction func nextButtonTapped(sender: AnyObject) {
+        PlayerController.sharedController.isSongInSavedTracks()
         player?.skipNext({ (error) in
             if error != nil {
                 print(error.localizedDescription)
             }
         })
-        //        QueueController.sharedController.checkIfQueueMatchesSavedArtists()
     }
     
     @IBAction func repeatButtonTapped(sender: AnyObject) {
@@ -217,11 +221,16 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             QueueController.sharedController.addMoreSongsBasedOnThisArtist()
         }
         
+        let addToSaved = UIAlertAction(title: "Add Song To Saved Tracks", style: .Default) { (_) in
+            PlayerController.sharedController.addSongToSavedTracks()
+        }
+        
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in
         }
         
         actionsheet.addAction(removeArtistTracks)
         //        actionsheet.addAction(addMoreSongs)
+        actionsheet.addAction(addToSaved)
         actionsheet.addAction(cancel)
         
         presentViewController(actionsheet, animated: true) { 
@@ -281,6 +290,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        updateUI()
         setPlayPauseButton()
     }
     
@@ -329,9 +339,10 @@ class mySlider: UISlider {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
-    //    
-    //    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-    //        return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
-    //    }
+//    
+//    
+//        
+//        override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+//            return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
+//        }
 }

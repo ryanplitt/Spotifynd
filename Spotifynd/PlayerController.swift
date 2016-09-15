@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import MediaPlayer
 
 
 class PlayerController {
@@ -15,6 +16,7 @@ class PlayerController {
     
     // MARK: Auth Controller Properties
     static var session: SPTSession?
+//    let playerVC = PlayerViewController()
     static var authToken: String?
     static var sessionArchiveKey = "SessionArchiveKey"
     
@@ -29,21 +31,25 @@ class PlayerController {
             NSNotificationCenter.defaultCenter().postNotificationName("indexPathChanged", object: nil)
         }
     }
+    var currentSongAlbumArtwork: UIImage?
+    
+    
     
     // MARK: Initialize Player
-    
     
     func initializePlayer() {
         player = SPTAudioStreamingController.sharedInstance()
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(PlayerController.authToken)
+        self.initializeMPRemoteCommandCenterForQueue()
     }
     
-    func setupPlayerFromQueue() {
+    func setupPlayerFromQueue(completion: () -> Void) {
         QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
             print("The operation has completed")
             self.initializePlaylistForPlayback({
-                print(self.player?.playbackState.description)
+                print("playing?: \(self.player?.playbackState.isPlaying)")
+                completion()
             })
         }
         
@@ -55,24 +61,26 @@ class PlayerController {
             let playlist = playlistData as! SPTPlaylistSnapshot
             let firstpage = playlist.firstTrackPage
             guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
-            guard firstSong.name == QueueController.sharedController.queue.first?.name else {
+            if firstSong.name == QueueController.sharedController.queue.first?.name  {
+                self.player!.playSpotifyURI(playlist.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                    if error != nil {
+                        print("There was an error preparing the playlist")
+                        sleep(1)
+                        self.initializePlaylistForPlayback(nil)
+                    }
+                    self.player?.setIsPlaying(false, callback: { (error) in
+                        if error != nil {
+                            print("There was an error setting the player to pause.")
+                        }
+                        completion?()
+                        NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+                    })
+                }
+            }else {
                 sleep(1)
                 print("The tracks didn't match")
                 self.initializePlaylistForPlayback(nil)
                 return
-            }
-            self.player!.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
-                if error != nil {
-                    print("There was an error preparing the playlist")
-                    sleep(1)
-                    self.initializePlaylistForPlayback(nil)
-                }
-                self.player?.setIsPlaying(false, callback: { (error) in
-                    if error != nil {
-                        print("There was an error setting the player to pause.")
-                    }
-                    completion?()
-                })
             }
         }
     }
@@ -95,8 +103,74 @@ class PlayerController {
                 print("Could not change the playing/pausing state")
             }
         })
+        print(player?.metadata?.currentTrack?.name)
     }
     
+    func isSongInSavedTracks(){
+        guard let songURI = player?.metadata.currentTrack?.uri else {return}
+        SPTYourMusic.savedTracksContains([songURI], forUserWithAccessToken: PlayerController.authToken) { (error, data) in
+            guard let callback = data else {return}
+            print(callback as? [Bool])
+        }
+    }
+    
+    func addSongToSavedTracks(){
+        guard let songURI = player?.metadata.currentTrack?.uri else {return}
+        SPTYourMusic.saveTracks([songURI], forUserWithAccessToken: PlayerController.authToken) { (error, _) in
+            if error != nil {
+                print(error)
+                print(error.localizedDescription)
+                print("there was an error saving the track")
+            } else {
+                print("The track was saved")
+            }
+        }
+    }
+    
+    // MARK: - Remote Command Center
+    func initializeMPRemoteCommandCenterForQueue() {
+        
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        let rcc = MPRemoteCommandCenter.sharedCommandCenter()
+        
+        rcc.playCommand.enabled = true
+        rcc.playCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
+            self.player?.setIsPlaying(true, callback: { (error) in
+                // completion
+            })
+            return .Success
+        }
+        
+        rcc.pauseCommand.enabled = true
+        rcc.pauseCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
+            self.player?.setIsPlaying(false, callback: { (error) in
+                // completion
+            })
+            return .Success
+        }
+        
+        rcc.nextTrackCommand.enabled = true
+        rcc.nextTrackCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
+            self.player?.skipNext({ (error) in
+                // completion
+            })
+            return .Success
+        }
+    }
+    
+    func setMPNowPlayingInfoCenterForTrack(track: SPTTrack?) {
+        guard let track = track else { return }
+        
+        var trackInfo = [String: AnyObject]()
+        if let artwork = self.currentSongAlbumArtwork {
+            let mediaArtworkImage = MPMediaItemArtwork(image: artwork)
+            trackInfo = [MPMediaItemPropertyTitle:track.name, MPMediaItemPropertyArtist:(track.artists.first?.name)!, MPMediaItemPropertyArtwork: mediaArtworkImage]
+        } else {
+            trackInfo = [MPMediaItemPropertyTitle:track.name, MPMediaItemPropertyArtist:(track.artists.first?.name)!]
+        }
+        
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = trackInfo
+    }
     
     // MARK: Archiving/Unarchiving Data
     
