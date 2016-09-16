@@ -60,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
 
-
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        
+    }
 }
 

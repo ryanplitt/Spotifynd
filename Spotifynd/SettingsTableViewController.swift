@@ -61,6 +61,7 @@ class SettingsTableViewController: UITableViewController {
         
         AuthViewController.SPTAuthSharedViewController?.clearCookies({ 
             player?.logout()
+            self.navigationController?.popToRootViewControllerAnimated(true)
         })
         self.performSegueWithIdentifier("toInitalViewController", sender: self)
     }

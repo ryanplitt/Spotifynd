@@ -11,12 +11,11 @@ import Foundation
 import MediaPlayer
 
 
-class PlayerController {
+class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     
     // MARK: Auth Controller Properties
     static var session: SPTSession?
-//    let playerVC = PlayerViewController()
     static var authToken: String?
     static var sessionArchiveKey = "SessionArchiveKey"
     
@@ -42,45 +41,34 @@ class PlayerController {
         try! player?.startWithClientId("bbd379abea604abca005f4eca064d395")
         player?.loginWithAccessToken(PlayerController.authToken)
         self.initializeMPRemoteCommandCenterForQueue()
+        player?.delegate = self
+        player?.playbackDelegate = self
     }
     
     func setupPlayerFromQueue(completion: () -> Void) {
         QueueController.sharedController.updateExistingSpotifyPlaylistFromQueueArray {
-            print("The operation has completed")
             self.initializePlaylistForPlayback({
-                print("playing?: \(self.player?.playbackState.isPlaying)")
                 completion()
             })
         }
-        
-        
     }
     
     func initializePlaylistForPlayback(completion: (() -> Void)?){
         SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: PlayerController.session) { (error, playlistData) in
             let playlist = playlistData as! SPTPlaylistSnapshot
-            let firstpage = playlist.firstTrackPage
-            guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
-            if firstSong.name == QueueController.sharedController.queue.first?.name  {
-                self.player!.playSpotifyURI(playlist.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
-                    if error != nil {
-                        print("There was an error preparing the playlist")
-                        sleep(1)
-                        self.initializePlaylistForPlayback(nil)
-                    }
-                    self.player?.setIsPlaying(false, callback: { (error) in
-                        if error != nil {
-                            print("There was an error setting the player to pause.")
-                        }
-                        completion?()
-                        NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
-                    })
+            self.player!.playSpotifyURI(playlist.uri.absoluteString, startingWithIndex: 0, startingWithPosition: 0) { (error) in
+                if error != nil {
+                    print("There was an error preparing the playlist")
+                    sleep(1)
+                    self.initializePlaylistForPlayback(nil)
                 }
-            }else {
-                sleep(1)
-                print("The tracks didn't match")
-                self.initializePlaylistForPlayback(nil)
-                return
+                self.player?.setIsPlaying(false, callback: { (error) in
+                    if error != nil {
+                        print("There was an error setting the player to pause.")
+                    }
+                    completion?()
+                    NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
+                })
             }
         }
     }
@@ -103,7 +91,6 @@ class PlayerController {
                 print("Could not change the playing/pausing state")
             }
         })
-        print(player?.metadata?.currentTrack?.name)
     }
     
     func isSongInSavedTracks(completion: ((success: Bool) -> Void)?){
@@ -161,37 +148,100 @@ class PlayerController {
         rcc.nextTrackCommand.enabled = true
         rcc.nextTrackCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
             self.player?.skipNext({ (error) in
-                // completion
+                    let track = self.player?.metadata?.nextTrack
+                    let imageURL = track?.albumCoverArtUri.substringFromIndex((track?.albumCoverArtUri.startIndex.advancedBy(14))!)
+                    guard let image = imageURL else {return}
+                QueueController.sharedController.getImageFromURL(NSURL(string: "https://i.scdn.co/image/\(image)")!, completion: { (image) in
+                        dispatch_async(dispatch_get_main_queue(), {
+                            PlayerController.sharedController.currentSongAlbumArtwork = image
+                            PlayerController.sharedController.setMPNowPlayingInfoCenterForTrack(track)
+                        })
+                    })
             })
             return .Success
         }
         
         rcc.previousTrackCommand.enabled = true
         rcc.previousTrackCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
-            self.player?.skipPrevious({ (error) in
-                // completion
+            self.player?.skipNext({ (error) in
+                let track = self.player?.metadata?.prevTrack
+                let imageURL = track?.albumCoverArtUri.substringFromIndex((track?.albumCoverArtUri.startIndex.advancedBy(14))!)
+                print(imageURL)
+                guard let image = imageURL else {return}
+                QueueController.sharedController.getImageFromURL(NSURL(string: "https://i.scdn.co/image/\(image)")!, completion: { (image) in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        PlayerController.sharedController.currentSongAlbumArtwork = image
+                        PlayerController.sharedController.setMPNowPlayingInfoCenterForTrack(track)
+                    })
+                })
             })
             return .Success
         }
         
+        
     }
     
-    func setMPNowPlayingInfoCenterForTrack(track: SPTTrack?) {
+    func setMPNowPlayingInfoCenterForTrack(track: SPTPlaybackTrack?) {
         guard let track = track else { return }
         
         var trackInfo = [String: AnyObject]()
         if let artwork = self.currentSongAlbumArtwork {
             let mediaArtworkImage = MPMediaItemArtwork(image: artwork)
             trackInfo = [MPMediaItemPropertyTitle:track.name,
-                         MPMediaItemPropertyArtist:(track.artists.first?.name)!,
-                         MPMediaItemPropertyArtwork: mediaArtworkImage]
-//               MPMediaItemPropertyGenre:(track)
+                         MPMediaItemPropertyArtist:(track.artistName),
+                         MPMediaItemPropertyArtwork: mediaArtworkImage,
+                         MPMediaItemPropertyPlaybackDuration: track.duration]
         }
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = trackInfo
     }
     
+    func setPositionOfTrackInMediaItemProperty(){
+        guard let position = self.positionOfCurrentTrack else {return}
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo?.updateValue(position, forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime)
+    }
     
+    // MARK: Player Controller Properties
+    var isPlaying: Bool {
+        get{
+            return player?.playbackState?.isPlaying ?? false
+        }
+        set{
+            NSNotificationCenter.defaultCenter().postNotificationName("isPlayingValueChanged", object: nil)
+                setPositionOfTrackInMediaItemProperty()
+        }
+    }
+    
+    var positionOfCurrentTrack: NSTimeInterval? {
+        didSet{
+            NSNotificationCenter.defaultCenter().postNotificationName("updatingPostionOfTrack", object: nil)
+        }
+    }
+    
+    // MARK: Player Delegate Functions
+    
+    
+    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
+        _ = (try? player?.stop())
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        self.isPlaying = isPlaying
+        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
+    }
+    
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
+        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
+        if let currentURI = player?.metadata.currentTrack?.uri {
+            let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
+            self.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
+        }
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
+        self.positionOfCurrentTrack = position
+    }
     
     // MARK: Archiving/Unarchiving Data
     

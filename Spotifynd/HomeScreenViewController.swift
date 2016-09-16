@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate {
+class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource, SearchResultsControllerDelegate {
 
     
     @IBOutlet weak var albumArtImageView: UIImageView!
@@ -25,6 +25,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
         SearchController.sharedController.getUsersTopArtistsForHomeScreen()
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
@@ -39,9 +40,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     override func viewWillAppear(animated: Bool) {
-        let player = PlayerController.sharedController.player
-        player?.delegate = self
-        player?.playbackDelegate = self
         setupMiniPlayer()
         setPlayPauseButton()
     }
@@ -147,21 +145,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         } else {
             self.playPauseButtonOutlet.setImage(UIImage(named: "play"), forState: .Normal)
         }
-    }
-    
-    // MARK: Audio Streaming Delegates
-    
-    
-    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
-        updateUIforMiniPlayer()
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
-        updateUIforMiniPlayer()
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
-        setPlayPauseButton()
     }
     
     // MARK: - Table View Functions

@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
+class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     static let sharedPlayer = PlayerViewController()
     let player = PlayerController.sharedController.player
@@ -35,6 +35,9 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "setupPlayer", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "setupAppearance", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateUI), name: "updateUI", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateSlider), name: "updatingPostionOfTrack", object: nil)
         
         self.navigationController?.navigationBarHidden = true
         
@@ -47,8 +50,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewWillAppear(animated: Bool) {
         setupSlider()
-        player?.delegate = self
-        player?.playbackDelegate = self
         if player?.playbackState != nil {
             updateUI()
             setPlayPauseButton()
@@ -103,6 +104,12 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         sliderPlaybackBar.tintColor = UIColor ( red: 0.0042, green: 0.1546, blue: 1.0, alpha: 1.0 )
     }
     
+    func updateSlider(){
+        guard let position = PlayerController.sharedController.positionOfCurrentTrack,
+            let duration = PlayerController.sharedController.player?.metadata.currentTrack?.duration else {return}
+        sliderPlaybackBar.value = Float(position/duration)
+    }
+    
     
     
     func updateUI() {
@@ -124,7 +131,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     dispatch_async(dispatch_get_main_queue(), { 
                         self.albumImage.image = image
                         PlayerController.sharedController.currentSongAlbumArtwork = image
-                        PlayerController.sharedController.setMPNowPlayingInfoCenterForTrack(track)
+                        guard let playbackTrack = self.player?.metadata?.currentTrack else {return}
+                        PlayerController.sharedController.setMPNowPlayingInfoCenterForTrack(playbackTrack)
                     })
                 })
             }
@@ -136,6 +144,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if PlayerController.sharedController.indexPathRowofCurrentSong != nil {
                 self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: PlayerController.sharedController.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
             }
+        }
+    }
+    
+    func toggleRepeat(){
+        if !(PlayerController.sharedController.player?.playbackState?.isRepeating)! {
+            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
+        } else {
+            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
         }
     }
     
@@ -198,9 +214,11 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         guard player != nil && player?.playbackState != nil else {return}
         if player?.playbackState.isRepeating == true {
             player?.setValue(false, forKey: "repeat")
+            self.toggleRepeat()
         }
         if player?.playbackState.isRepeating == false {
             player?.setValue(true, forKey: "repeat")
+            self.toggleRepeat()
         }
     }
     
@@ -293,11 +311,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         })
     }
     
-    
-    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
-        self.updateUI()
-    }
-    
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
         updateUI()
         setPlayPauseButton()
@@ -326,10 +339,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
-        _ = (try? player?.stop())
-        navigationController?.popToRootViewControllerAnimated(true)
-    }
+
     
     /*
      // MARK: - Navigation
