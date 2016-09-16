@@ -42,12 +42,28 @@ class QueueController {
             }
         }
         dispatch_group_notify(removeTrackGroup, dispatch_get_main_queue()) { 
-            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: PlayerController.authToken, callback: { (error) in
-                if error != nil {
-                    print("There was an error removing the tracks from the playlist")
-                }
-                completion()
-            })
+//            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: PlayerController.authToken, callback: { (error) in
+//                if error != nil {
+//                    print("There was an error removing the tracks from the playlist")
+//                }
+//                completion()
+//            })
+            
+            
+//            let request = (try? SPTPlaylistSnapshot.createRequestForRemovingTracks(tracksToRemove, fromPlaylist: NSURL(string:(self.spotifyndPlaylist?.uri.absoluteString)!), withAccessToken: PlayerController.authToken, snapshot: self.spotifyndPlaylist?.snapshotId))
+//            SPTRequest.sharedHandler().performRequest(request, callback: { (error, response, data) in
+//                if error != nil {
+//                    print(error)
+//                    print(error.localizedDescription)
+//                    print("There was an error removing the tracks from the playlist")
+//                }
+//                if response != nil {
+//                    print(response)
+//                }
+//            })
+//            PlayerController.sharedController.setupPlayerFromQueue({ 
+//                // competion
+//            })
         }
     }
     
@@ -57,8 +73,14 @@ class QueueController {
                 self.getTopTracksForArtists(artistsArray, completion: { (arrayOfTracks) in // Step 3
                     self.randomizeArrayOfTracks(arrayOfTracks, completion: { (randomizedArray) in // Step 4
 //                        self.checkIfQueueIsInPlaylist({ (success) in // Step 5
+//                            if !success {
                                 self.queue = randomizedArray
                                 completion?()
+//                            } else if success {
+//                                self.addSongsToEndOfSpotifyndPlaylist(randomizedArray)
+//                                self.queue = self.queue + randomizedArray
+//                            }
+//                        })
                     })
                 })
             })
@@ -230,12 +252,22 @@ class QueueController {
     }
     
     func addMoreSongsBasedOnThisArtist() {
-        //                guard let currentTrack = PlayerController.sharedController.player?.metadata?.currentTrack else {return}
-        //                let arrayOfURI = queue.flatMap({$0.uri.absoluteURL})
-        //                guard let index = arrayOfURI.indexOf(NSURL(string:currentTrack.uri)!) else {return}
-        //                self.setQueueFromArtist(currentTrack.artistUri, startingIndex: index) {
-        //                    //completion
-        //                }
+        guard let currentTrack = PlayerController.sharedController.player?.metadata?.currentTrack else {return}
+//        let arrayOfURI = queue.flatMap({$0.uri.absoluteURL})
+//        guard let index = arrayOfURI.indexOf(NSURL(string:currentTrack.uri)!) else {return}
+        self.setQueueFromArtist(currentTrack.artistUri) {
+            //completion
+        }
+    }
+    
+    func addSongsToEndOfSpotifyndPlaylist(arrayOfTracks: [SPTTrack]){
+        QueueController.sharedController.spotifyndPlaylist?.addTracksWithPositionToPlaylist(arrayOfTracks, withPosition: Int32(self.queue.count), session: PlayerController.session, callback: { (error) in
+            if error != nil {
+                print(error)
+                print(error.localizedDescription)
+                print("There was a problem adding the new tracks to the playlist")
+            }
+        })
     }
     
     func queueSongToArray(track: SPTTrack) {

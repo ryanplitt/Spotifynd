@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -14,20 +14,19 @@
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Mu-white" translatesAutoresizingMaskIntoConstraints="NO" id="3H1-qz-4iE">
-                                <rect key="frame" x="20" y="20" width="560" height="580"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="cn6-fU-yJi">
+                                <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="3H1-qz-4iE" secondAttribute="trailing" id="5Ik-ew-uyO"/>
-                            <constraint firstItem="3H1-qz-4iE" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="VfV-2e-V2S"/>
-                            <constraint firstItem="3H1-qz-4iE" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="mQe-pn-hfI"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="3H1-qz-4iE" secondAttribute="bottom" id="tH7-pS-Yd7"/>
+                            <constraint firstItem="cn6-fU-yJi" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="0so-qM-wfW"/>
+                            <constraint firstAttribute="trailing" secondItem="cn6-fU-yJi" secondAttribute="trailing" id="1Oh-yX-OTK"/>
+                            <constraint firstItem="cn6-fU-yJi" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="-20" id="e62-Dh-5mP"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="cn6-fU-yJi" secondAttribute="bottom" id="g17-5J-FmM"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -37,6 +36,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Mu-white" width="275" height="275"/>
+        <image name="Image" width="612" height="792"/>
     </resources>
 </document>

@@ -165,6 +165,15 @@ class PlayerController {
             })
             return .Success
         }
+        
+        rcc.previousTrackCommand.enabled = true
+        rcc.previousTrackCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
+            self.player?.skipPrevious({ (error) in
+                // completion
+            })
+            return .Success
+        }
+        
     }
     
     func setMPNowPlayingInfoCenterForTrack(track: SPTTrack?) {
@@ -173,13 +182,16 @@ class PlayerController {
         var trackInfo = [String: AnyObject]()
         if let artwork = self.currentSongAlbumArtwork {
             let mediaArtworkImage = MPMediaItemArtwork(image: artwork)
-            trackInfo = [MPMediaItemPropertyTitle:track.name, MPMediaItemPropertyArtist:(track.artists.first?.name)!, MPMediaItemPropertyArtwork: mediaArtworkImage]
-        } else {
-            trackInfo = [MPMediaItemPropertyTitle:track.name, MPMediaItemPropertyArtist:(track.artists.first?.name)!]
+            trackInfo = [MPMediaItemPropertyTitle:track.name,
+                         MPMediaItemPropertyArtist:(track.artists.first?.name)!,
+                         MPMediaItemPropertyArtwork: mediaArtworkImage]
+//               MPMediaItemPropertyGenre:(track)
         }
         
         MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = trackInfo
     }
+    
+    
     
     // MARK: Archiving/Unarchiving Data
     

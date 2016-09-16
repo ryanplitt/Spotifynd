@@ -34,12 +34,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "setupPlayer", object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(initializePlaylistForPlayback), name: "playerFailedInitialization", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "setupAppearance", object: nil)
         
         self.navigationController?.navigationBarHidden = true
         
         setupGestureRecognizers()
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -228,13 +231,14 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         actionsheet.addAction(removeArtistTracks)
-        //        actionsheet.addAction(addMoreSongs)
+//      actionsheet.addAction(addMoreSongs)
         
         PlayerController.sharedController.isSongInSavedTracks { (success) in
             if success{
                 actionsheet.addAction(addToSaved)
             }
         }
+        
         
         actionsheet.addAction(cancel)
         

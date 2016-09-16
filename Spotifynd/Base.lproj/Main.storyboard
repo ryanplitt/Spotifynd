@@ -168,7 +168,7 @@
                                     <constraint firstAttribute="trailing" secondItem="yfX-TW-qON" secondAttribute="trailing" id="i9J-Bg-8Ft"/>
                                 </constraints>
                             </view>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EO3-VX-der">
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EO3-VX-der">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="2" id="nnm-ZQ-Zg4"/>
                                 </constraints>
@@ -412,7 +412,7 @@
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="trailing" secondItem="fbZ-85-TOG" secondAttribute="trailing" constant="-8" id="T7t-X3-1Va"/>
                             <constraint firstItem="MNY-QQ-3t9" firstAttribute="centerX" secondItem="fbZ-85-TOG" secondAttribute="centerX" id="TJR-Pt-e2h"/>
                             <constraint firstItem="MNY-QQ-3t9" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leadingMargin" id="Usp-te-CUr"/>
-                            <constraint firstItem="MNY-QQ-3t9" firstAttribute="top" secondItem="DUc-nX-Ub4" secondAttribute="bottom" constant="-20" id="YvL-5H-es1"/>
+                            <constraint firstItem="MNY-QQ-3t9" firstAttribute="top" secondItem="DUc-nX-Ub4" secondAttribute="bottom" id="YvL-5H-es1"/>
                             <constraint firstItem="lh9-bq-RLj" firstAttribute="top" secondItem="I1i-x6-Qz2" secondAttribute="bottom" id="eAh-jb-ZQM"/>
                             <constraint firstItem="I1i-x6-Qz2" firstAttribute="leading" secondItem="fbZ-85-TOG" secondAttribute="leading" constant="8" id="fsV-fR-WQ6"/>
                             <constraint firstItem="lh9-bq-RLj" firstAttribute="top" secondItem="I1i-x6-Qz2" secondAttribute="bottom" constant="8" id="hjA-aA-bbY"/>
@@ -426,12 +426,12 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="AM7-BL-fwY"/>
+                                <exclude reference="zjo-Hm-SUt"/>
                                 <exclude reference="Usp-te-CUr"/>
                                 <exclude reference="jQJ-Px-pF3"/>
                                 <exclude reference="jqy-wf-LK2"/>
                                 <exclude reference="rlu-mW-adx"/>
-                                <exclude reference="AM7-BL-fwY"/>
-                                <exclude reference="zjo-Hm-SUt"/>
                                 <exclude reference="hjA-aA-bbY"/>
                             </mask>
                         </variation>
