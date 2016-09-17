@@ -238,6 +238,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
             let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
             self.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
         }
+        setMPNowPlayingInfoCenterForTrack(metadata.currentTrack)
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {

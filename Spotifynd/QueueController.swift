@@ -72,15 +72,8 @@ class QueueController {
             self.getRelatedArtists(artist, completion: { (artistsArray) in // Step 2
                 self.getTopTracksForArtists(artistsArray, completion: { (arrayOfTracks) in // Step 3
                     self.randomizeArrayOfTracks(arrayOfTracks, completion: { (randomizedArray) in // Step 4
-//                        self.checkIfQueueIsInPlaylist({ (success) in // Step 5
-//                            if !success {
-                                self.queue = randomizedArray
-                                completion?()
-//                            } else if success {
-//                                self.addSongsToEndOfSpotifyndPlaylist(randomizedArray)
-//                                self.queue = self.queue + randomizedArray
-//                            }
-//                        })
+                        self.queue = randomizedArray
+                        completion?()
                     })
                 })
             })
@@ -212,17 +205,6 @@ class QueueController {
                     }
                     completion?()
                 })
-//        let tracks = self.queue.flatMap({$0.uri.absoluteString})
-//        let jsonDictionary = ["uris":tracks]
-//        SPTUser.requestCurrentUserWithAccessToken(PlayerController.authToken) { (error, userData) in
-//            let user = userData as! SPTUser
-//            print(user)
-//            
-//            let request = (try? SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/users/\(user.canonicalUserName)/playlists/2A7O6eT1jAjO0DQ7KoXuf8/tracks"), withAccessToken: PlayerController.authToken, httpMethod: "PUT", values: jsonDictionary, valueBodyIsJSON: true, sendDataAsQueryString: false))
-//            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
-//                completion?()
-//            }
-//        }
     }
     
     

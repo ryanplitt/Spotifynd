@@ -499,20 +499,9 @@
                                             <frame key="frameInset" width="320" height="111"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="guJ-us-sEH">
-                                                    <frame key="frameInset" width="375" height="106"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="guJ-us-sEH">
                                                     <subviews>
-                                                        <segmentedControl opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="udK-kh-9pC">
-                                                            <segments>
-                                                                <segment title="Short"/>
-                                                                <segment title="Medium"/>
-                                                                <segment title="Long"/>
-                                                            </segments>
-                                                            <connections>
-                                                                <action selector="artistsRangeSegmentValueChanged:" destination="Hj4-63-SFy" eventType="valueChanged" id="fGM-yc-qip"/>
-                                                            </connections>
-                                                        </segmentedControl>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8oB-C1-47H">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8oB-C1-47H" userLabel="Top Artists Range: Short - approx 4 weeks Medium - approx 6 months Long - approx 10 years">
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="21" id="DVu-iz-29U"/>
                                                             </constraints>
@@ -529,16 +518,30 @@ Long - approx 10 years</string>
                                                                 </mask>
                                                             </variation>
                                                         </label>
+                                                        <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="udK-kh-9pC">
+                                                            <frame key="frameInset" minX="8" minY="18" width="97.44%" height="29"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="28" id="KqL-w8-Poz"/>
+                                                            </constraints>
+                                                            <segments>
+                                                                <segment title="Short"/>
+                                                                <segment title="Medium"/>
+                                                                <segment title="Long"/>
+                                                            </segments>
+                                                            <connections>
+                                                                <action selector="artistsRangeSegmentValueChanged:" destination="Hj4-63-SFy" eventType="valueChanged" id="fGM-yc-qip"/>
+                                                            </connections>
+                                                        </segmentedControl>
                                                     </subviews>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
+                                                        <constraint firstAttribute="bottom" secondItem="udK-kh-9pC" secondAttribute="bottom" constant="8" id="0XO-61-Cav"/>
+                                                        <constraint firstAttribute="trailing" secondItem="udK-kh-9pC" secondAttribute="trailing" constant="8" id="NAD-yq-W4P"/>
                                                         <constraint firstItem="8oB-C1-47H" firstAttribute="top" secondItem="guJ-us-sEH" secondAttribute="topMargin" id="RYK-Rm-5U3"/>
                                                         <constraint firstItem="8oB-C1-47H" firstAttribute="leading" secondItem="guJ-us-sEH" secondAttribute="leadingMargin" id="XUU-vD-QBK"/>
-                                                        <constraint firstItem="8oB-C1-47H" firstAttribute="trailing" secondItem="udK-kh-9pC" secondAttribute="trailing" id="fZA-59-5XT"/>
-                                                        <constraint firstItem="udK-kh-9pC" firstAttribute="top" secondItem="8oB-C1-47H" secondAttribute="bottom" constant="8" symbolic="YES" id="np0-oG-nah"/>
+                                                        <constraint firstItem="udK-kh-9pC" firstAttribute="leading" secondItem="guJ-us-sEH" secondAttribute="leading" constant="8" id="eBx-Rc-ATy"/>
                                                         <constraint firstItem="8oB-C1-47H" firstAttribute="trailing" secondItem="guJ-us-sEH" secondAttribute="trailingMargin" id="o6S-du-QqH"/>
                                                         <constraint firstAttribute="height" constant="67" id="sWQ-aZ-9Ou"/>
-                                                        <constraint firstItem="8oB-C1-47H" firstAttribute="leading" secondItem="udK-kh-9pC" secondAttribute="leading" id="tDP-Gv-VBt"/>
                                                     </constraints>
                                                     <variation key="default">
                                                         <mask key="constraints">
@@ -549,13 +552,13 @@ Long - approx 10 years</string>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="guJ-us-sEH" firstAttribute="top" secondItem="CFT-Xc-lhc" secondAttribute="top" id="0ad-FD-LDm"/>
-                                                <constraint firstAttribute="bottom" secondItem="guJ-us-sEH" secondAttribute="bottom" constant="48.5" id="NY2-ff-3Xx"/>
+                                                <constraint firstAttribute="bottom" secondItem="guJ-us-sEH" secondAttribute="bottom" id="NY2-ff-3Xx"/>
                                                 <constraint firstItem="guJ-us-sEH" firstAttribute="leading" secondItem="CFT-Xc-lhc" secondAttribute="leading" id="ZxZ-q1-nlp"/>
                                                 <constraint firstAttribute="trailing" secondItem="guJ-us-sEH" secondAttribute="trailing" id="fYC-Pz-t8p"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="190" id="GZk-bj-mHT">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="190" id="GZk-bj-mHT">
                                         <rect key="frame" x="0.0" y="176" width="320" height="190"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GZk-bj-mHT" id="Gj8-v0-blc">
@@ -647,7 +650,7 @@ Long - approx 10 years</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KTV-j7-9hR" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="6NA-vW-6Py" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2226" y="1702"/>
+            <point key="canvasLocation" x="2225.625" y="1701.7605633802816"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="m98-b4-6sj">

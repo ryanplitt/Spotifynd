@@ -27,7 +27,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
         setupNavBar()
-        SearchController.sharedController.getUsersTopArtistsForHomeScreen()
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
         QueueController.sharedController.checkIfSpotifyndPlaylistExists { (success) in
@@ -48,6 +47,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
     }
     
     override func viewWillAppear(animated: Bool) {
+        SearchController.sharedController.getUsersTopArtistsForHomeScreen()
         setupMiniPlayer()
         setPlayPauseButton()
     }
