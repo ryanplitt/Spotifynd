@@ -26,6 +26,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
+        setupNavBar()
         SearchController.sharedController.getUsersTopArtistsForHomeScreen()
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
@@ -36,6 +37,13 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                 QueueController.sharedController.createSpotifyPlaylistFromQueueArray()
             }
         }
+        
+    }
+    
+    func setupNavBar(){
+        let image = UIImage(named: "NewMuNoLogo2")
+        let imageView = UIImageView(image: image)
+        self.navigationItem.titleView = imageView
         
     }
     

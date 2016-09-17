@@ -151,6 +151,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
                     let track = self.player?.metadata?.nextTrack
                     let imageURL = track?.albumCoverArtUri.substringFromIndex((track?.albumCoverArtUri.startIndex.advancedBy(14))!)
                     guard let image = imageURL else {return}
+                print(image)
                 QueueController.sharedController.getImageFromURL(NSURL(string: "https://i.scdn.co/image/\(image)")!, completion: { (image) in
                         dispatch_async(dispatch_get_main_queue(), {
                             PlayerController.sharedController.currentSongAlbumArtwork = image
@@ -163,7 +164,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
         
         rcc.previousTrackCommand.enabled = true
         rcc.previousTrackCommand.addTargetWithHandler { (event) -> MPRemoteCommandHandlerStatus in
-            self.player?.skipNext({ (error) in
+            self.player?.skipPrevious({ (error) in
                 let track = self.player?.metadata?.prevTrack
                 let imageURL = track?.albumCoverArtUri.substringFromIndex((track?.albumCoverArtUri.startIndex.advancedBy(14))!)
                 print(imageURL)
@@ -227,7 +228,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
         self.isPlaying = isPlaying
-        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
+//        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
     }
     
     

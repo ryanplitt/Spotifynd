@@ -310,38 +310,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         })
     }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
-        updateUI()
-        setPlayPauseButton()
-    }
-    
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeMetadata metadata: SPTPlaybackMetadata!) {
-        self.updateUI()
-        if let currentURI = player?.metadata.currentTrack?.uri {
-            let uriArrays = QueueController.sharedController.queue.flatMap({$0.uri.absoluteString})
-            PlayerController.sharedController.indexPathRowofCurrentSong = uriArrays.indexOf(currentURI)
-        }
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePosition position: NSTimeInterval) {
-        if let duration = self.player?.metadata.currentTrack?.duration {
-            self.sliderPlaybackBar.value = Float(Double(position)/Double(duration))
-        }
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeRepeatStatus isRepeated: Bool) {
-        if isRepeated {
-            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
-        } else {
-            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
-        }
-    }
-    
-
-    
-    /*
+        /*
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
