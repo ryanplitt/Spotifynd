@@ -61,14 +61,9 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
                     print("There was an error preparing the playlist")
                     sleep(1)
                     self.initializePlaylistForPlayback(nil)
-                }
-                self.player?.setIsPlaying(false, callback: { (error) in
-                    if error != nil {
-                        print("There was an error setting the player to pause.")
-                    }
                     completion?()
                     NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
-                })
+                }
             }
         }
     }

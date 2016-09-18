@@ -9,29 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Spotifynd/SearchController.swift"
-            timestampString = "495811977.649659"
+            filePath = "Spotifynd/QueueController.swift"
+            timestampString = "495855773.915224"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "getUsersTopArtistsForHomeScreen()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Spotifynd/SearchController.swift"
-            timestampString = "495811978.891718"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "getUsersTopArtistsForHomeScreen()"
+            startingLineNumber = "273"
+            endingLineNumber = "273"
+            landmarkName = "checkIfArrayMatchesSavedTracks(arrayOfTracks:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

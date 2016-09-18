@@ -23,7 +23,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var currentTimeLabel: UILabel!
     @IBOutlet weak var timeRemainingLabel: UILabel!
-    @IBOutlet weak var sliderPlaybackBar: mySlider!
+    @IBOutlet weak var sliderPlaybackBar: UISlider!
     @IBOutlet weak var repeatButton: UIButton!
     
     
@@ -100,8 +100,8 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func setupSlider() {
         sliderPlaybackBar.value = 0
-        sliderPlaybackBar.thumbTintColor = .clearColor()
         sliderPlaybackBar.tintColor = UIColor ( red: 0.0042, green: 0.1546, blue: 1.0, alpha: 1.0 )
+        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb0"), forState: .Normal)
     }
     
     func updateSlider(){
@@ -320,17 +320,4 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
      }
      */
     
-}
-
-class mySlider: UISlider {
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-//    
-//    
-//        
-//        override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-//            return CGRect(x: CGFloat(value), y: 0, width: 1, height: 1)
-//        }
 }

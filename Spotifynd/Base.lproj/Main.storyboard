@@ -20,18 +20,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7YV-GU-Qkk">
-                                <frame key="frameInset" minX="24" minY="285" width="327" height="98"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7YV-GU-Qkk">
                                 <color key="backgroundColor" red="0.0" green="1" blue="0.18379173432082263" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="7YV-GU-Qkk" secondAttribute="height" multiplier="1499:481" id="MYs-Py-dWt"/>
+                                </constraints>
                                 <inset key="contentEdgeInsets" minX="20" minY="10" maxX="20" maxY="10"/>
-                                <state key="normal" title="Sign In"/>
+                                <state key="normal" title="Sign In" image="SignInSpotify"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="50"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="logginWithSpotifyButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F4I-7x-Klg"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="You need a Spotify Premium Account in order to use this application. Please sign in." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
                                 <frame key="frameInset" minX="18" minY="206" width="338" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <string key="text">NewMu is the easiest way to find new music on Spotify you love. You must have a Spotify Premium Account in order to use NewMu.
+
+Once signed in, select one of your top artists or search for a new artist to instantly create a playlist of songs you'll love. 
+
+Select "remove songs in my library" in the settings to ensure that you find music you've never heard</string>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -40,14 +52,15 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="top" secondItem="xg3-uh-CaZ" secondAttribute="bottom" constant="64" id="7bz-Vb-Z5d"/>
-                            <constraint firstItem="xg3-uh-CaZ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="8E5-vb-fyI"/>
+                            <constraint firstItem="xg3-uh-CaZ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="64" id="8E5-vb-fyI"/>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9j6-7U-4wj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="xg3-uh-CaZ" secondAttribute="trailing" constant="8" id="I53-zP-4KG"/>
+                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="40" id="NGH-3H-Cg8"/>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="NfA-Eu-AZq"/>
                             <constraint firstItem="xg3-uh-CaZ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="8" id="Uns-Yp-OKA"/>
-                            <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="7YV-GU-Qkk" secondAttribute="centerX" id="td9-MV-BAW"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7YV-GU-Qkk" secondAttribute="bottom" constant="50" id="dBB-vj-cwt"/>
+                            <constraint firstAttribute="trailing" secondItem="7YV-GU-Qkk" secondAttribute="trailing" constant="40" id="gyn-Wc-0TA"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5eL-cB-DTp" secondAttribute="trailing" id="vfK-ji-CJh"/>
-                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="top" secondItem="5eL-cB-DTp" secondAttribute="bottom" constant="58" id="zqo-Jy-BoF"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -674,6 +687,7 @@ Long - approx 10 years</string>
     <resources>
         <image name="NewMuLogo-black" width="259" height="114"/>
         <image name="Settings" width="25" height="25"/>
+        <image name="SignInSpotify" width="1404" height="461"/>
         <image name="backButtonIcon" width="24" height="24"/>
         <image name="expand" width="32" height="32"/>
         <image name="forwardButtonIcon" width="24" height="24"/>
