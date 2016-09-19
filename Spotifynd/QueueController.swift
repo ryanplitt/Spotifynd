@@ -25,9 +25,6 @@ class QueueController {
     
     var timeStampOfPlaylistMade: NSDate?
     
-    // MARK: Home Screen Functions
-    
-    
     // MARK: Queue Management
     
     func removeTracksArtistFromQueue(artistName: String, completion: () -> Void) {
@@ -72,8 +69,12 @@ class QueueController {
             self.getRelatedArtists(artist, completion: { (artistsArray) in // Step 2
                 self.getTopTracksForArtists(artistsArray, completion: { (arrayOfTracks) in // Step 3
                     self.randomizeArrayOfTracks(arrayOfTracks, completion: { (randomizedArray) in // Step 4
-                        self.queue = randomizedArray
-                        completion?()
+                        self.checkIfQueueMatchesSavedArtists(randomizedArray, completion: { (newArrayOfTracks) in
+                            self.checkIfArrayMatchesSavedTracks(newArrayOfTracks, completion: { (newArray) in
+                                self.queue = newArray
+                                completion?()
+                            })
+                        })
                     })
                 })
             })
@@ -265,38 +266,72 @@ class QueueController {
         queue.removeAtIndex(index!)
     }
     
-    func checkIfQueueMatchesSavedTracks(){
-        for song in queue {
-            let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
-            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
-                if data != nil {
-                    guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
-                    if list.first == true {
-                        self.removeTrackFromQueue(song)
+    func checkIfArrayMatchesSavedTracks(arrayOfTracks: [SPTTrack], completion: (newArrayOfTracks: [SPTTrack]) -> Void){
+        if NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.songNSUserDefaultsKey) == true {
+            let matchedSavedTracksGroup = dispatch_group_create()
+            var newArrayOfTracks: [SPTTrack] = []
+            for song in arrayOfTracks {
+                dispatch_group_enter(matchedSavedTracksGroup)
+                let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
+                SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+                    
+                    if data != nil {
+                        guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                        if list.first == false {
+                            newArrayOfTracks.append(song)
+                            dispatch_group_leave(matchedSavedTracksGroup)
+                        } else {
+                            dispatch_group_leave(matchedSavedTracksGroup)
+                        }
+                    } else {
+                        dispatch_group_leave(matchedSavedTracksGroup)
                     }
                 }
             }
+            dispatch_group_notify(matchedSavedTracksGroup, dispatch_get_main_queue()) {
+                completion(newArrayOfTracks: newArrayOfTracks)
+            }
+        } else {
+            completion(newArrayOfTracks: arrayOfTracks)
         }
     }
     
-    func checkIfQueueMatchesSavedArtists(){
-        for song in queue {
-            let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
-            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
-                if data != nil {
-                    guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
-                    if list.first == true {
-                        let artistsSong = song
-                        for song in self.queue {
-                            if song.artists.first?.identifier == artistsSong.artists.first?.identifier {
-                                self.removeTrackFromQueue(song)
+    func checkIfQueueMatchesSavedArtists(arrayOfTracks: [SPTTrack], completion: (newArray: [SPTTrack]) -> Void){
+        if NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.artistsNSUserDefaultsKey) == true {
+            let matchedSavedArtistsGroup = dispatch_group_create()
+            var newArrayOfTracks: [SPTTrack] = []
+            for song in arrayOfTracks {
+               dispatch_group_enter(matchedSavedArtistsGroup)
+                let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
+                SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+                    
+                    if data != nil {
+                        guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                        
+                        if list.first == true {
+                            for newSong in newArrayOfTracks {
+                                if newSong.artists.first?.identifier == song.artists.first?.identifier {
+                                    if let index = newArrayOfTracks.indexOf(newSong){
+                                        newArrayOfTracks.removeAtIndex(index)
+                                    }
+                                }
                             }
                         }
+                        dispatch_group_leave(matchedSavedArtistsGroup)
+                    } else {
+                        completion(newArray: arrayOfTracks)
                     }
+                    
                 }
             }
+            dispatch_group_notify(matchedSavedArtistsGroup, dispatch_get_main_queue()) {
+                completion(newArray: newArrayOfTracks)
+            }
+        } else {
+            completion(newArray: arrayOfTracks)
         }
     }
+    
     
     // MARK: Helper Functions
     func getImageFromURL(imageURL: NSURL, completion: ((image: UIImage) -> Void)?){
