@@ -29,14 +29,14 @@
                                 <state key="normal" title="Sign In" image="SignInSpotify"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <integer key="value" value="50"/>
+                                        <integer key="value" value="40"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="logginWithSpotifyButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F4I-7x-Klg"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="5eL-cB-DTp">
                                 <frame key="frameInset" minX="18" minY="206" width="338" height="21"/>
                                 <string key="text">NewMu is the easiest way to find new music on Spotify you love. You must have a Spotify Premium Account in order to use NewMu.
 
@@ -47,11 +47,14 @@ Select "remove songs in my library" in the settings to ensure that you find musi
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NewMuLogo-black" translatesAutoresizingMaskIntoConstraints="NO" id="xg3-uh-CaZ"/>
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="NewMuLogo-black" translatesAutoresizingMaskIntoConstraints="NO" id="xg3-uh-CaZ">
+                                <frame key="frameInset" minX="24" minY="84" width="272" height="114"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="5eL-cB-DTp" firstAttribute="top" secondItem="xg3-uh-CaZ" secondAttribute="bottom" constant="64" id="7bz-Vb-Z5d"/>
+                            <constraint firstItem="7YV-GU-Qkk" firstAttribute="top" secondItem="5eL-cB-DTp" secondAttribute="bottom" constant="8" id="3gW-0B-fya"/>
+                            <constraint firstItem="5eL-cB-DTp" firstAttribute="top" secondItem="xg3-uh-CaZ" secondAttribute="bottom" constant="8" id="7bz-Vb-Z5d"/>
                             <constraint firstItem="xg3-uh-CaZ" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="64" id="8E5-vb-fyI"/>
                             <constraint firstItem="5eL-cB-DTp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9j6-7U-4wj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="xg3-uh-CaZ" secondAttribute="trailing" constant="8" id="I53-zP-4KG"/>

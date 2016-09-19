@@ -26,6 +26,7 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "topArtistLoaded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateUIforMiniPlayer), name: "updateUI", object: nil)
         setupNavBar()
         setupSearchController()
         tableView.tableHeaderView = searchController?.searchBar
