@@ -14,18 +14,20 @@ import MediaPlayer
 class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     
+    // MARK: Shared Controller
+    static let sharedController = PlayerController()
+    
+    
     // MARK: Auth Controller Properties
     static var session: SPTSession?
     static var authToken: String?
     static var sessionArchiveKey = "SessionArchiveKey"
     
     
-    // MARK: Shared Controller
-    static let sharedController = PlayerController()
-    
+
     // MARK: Player Properties
     var player: SPTAudioStreamingController?
-    var indexPathRowofCurrentSong:Int? {
+    var indexPathRowofCurrentSong: Int? {
         didSet{
             NSNotificationCenter.defaultCenter().postNotificationName("indexPathChanged", object: nil)
         }
@@ -218,7 +220,14 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
     
     
     func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
-        _ = (try? player?.stop())
+        SPTAuth.defaultInstance().session = nil
+        self.saveSessionToUserDefaults(SPTAuth.defaultInstance().session)
+        do {
+        _ = (try player?.stop())
+            
+        } catch {
+            print("error stoping tracks")
+        }
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {

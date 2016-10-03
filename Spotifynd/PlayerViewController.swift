@@ -39,8 +39,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateSlider), name: "updatingPostionOfTrack", object: nil)
         
-        self.navigationController?.navigationBarHidden = true
-        
         setupGestureRecognizers()
     }
     
@@ -56,9 +54,6 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        navigationController?.navigationBarHidden = false
-    }
     
     func setupGestureRecognizers(){
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToDownSwipeGesture))
