@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
@@ -534,8 +534,7 @@ Long - approx 10 years</string>
                                                                 </mask>
                                                             </variation>
                                                         </label>
-                                                        <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="udK-kh-9pC">
-                                                            <frame key="frameInset" minX="8" minY="18" width="97.44%" height="29"/>
+                                                        <segmentedControl opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="udK-kh-9pC">
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="28" id="KqL-w8-Poz"/>
                                                             </constraints>
@@ -574,11 +573,11 @@ Long - approx 10 years</string>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="190" id="GZk-bj-mHT">
-                                        <rect key="frame" x="0.0" y="176" width="320" height="190"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="143" id="GZk-bj-mHT">
+                                        <rect key="frame" x="0.0" y="176" width="320" height="143"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GZk-bj-mHT" id="Gj8-v0-blc">
-                                            <frame key="frameInset" width="320" height="189"/>
+                                            <frame key="frameInset" width="320" height="142"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Default Playlist Options:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rJY-po-Agh">
@@ -586,7 +585,7 @@ Long - approx 10 years</string>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rAn-RV-ESj">
+                                                <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rAn-RV-ESj">
                                                     <connections>
                                                         <action selector="artistsInLibraryCheckValueChanged:" destination="Hj4-63-SFy" eventType="valueChanged" id="wLV-L6-27v"/>
                                                     </connections>
@@ -596,12 +595,14 @@ Long - approx 10 years</string>
                                                         <action selector="songsInLibraryCheckValueChanged:" destination="Hj4-63-SFy" eventType="valueChanged" id="idL-0D-m9u"/>
                                                     </connections>
                                                 </switch>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Only play artists I don't have in my library" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9nx-DA-Y05">
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Only play artists I don't have in my library" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9nx-DA-Y05">
+                                                    <frame key="frameInset" minX="53" minY="34" width="210" height="48.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Only play songs I don't have in my library" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFy-8J-8bR">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Only play songs I don't have in my library" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFy-8J-8bR">
+                                                    <frame key="frameInset" minX="53" minY="96.5" width="210" height="31.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -610,7 +611,6 @@ Long - approx 10 years</string>
                                             <constraints>
                                                 <constraint firstItem="PvW-cN-3TD" firstAttribute="top" secondItem="rAn-RV-ESj" secondAttribute="bottom" constant="23" id="3gY-G0-Mj1"/>
                                                 <constraint firstItem="9nx-DA-Y05" firstAttribute="leading" secondItem="VFy-8J-8bR" secondAttribute="leading" id="64i-8B-rKk"/>
-                                                <constraint firstItem="9nx-DA-Y05" firstAttribute="top" secondItem="rJY-po-Agh" secondAttribute="bottom" constant="14" id="7uP-ia-IX4"/>
                                                 <constraint firstItem="9nx-DA-Y05" firstAttribute="centerY" secondItem="rAn-RV-ESj" secondAttribute="centerY" id="BWe-7Y-DxK"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="rAn-RV-ESj" secondAttribute="trailing" constant="29" id="CTl-fa-hgo"/>
                                                 <constraint firstItem="rJY-po-Agh" firstAttribute="centerX" secondItem="Gj8-v0-blc" secondAttribute="centerX" id="EXg-95-jFv"/>
@@ -619,6 +619,7 @@ Long - approx 10 years</string>
                                                 <constraint firstItem="rJY-po-Agh" firstAttribute="top" secondItem="Gj8-v0-blc" secondAttribute="topMargin" id="Xw9-nZ-Jgj"/>
                                                 <constraint firstItem="9nx-DA-Y05" firstAttribute="leading" secondItem="Gj8-v0-blc" secondAttribute="leadingMargin" constant="45" id="aZh-Vr-S1Z"/>
                                                 <constraint firstItem="rAn-RV-ESj" firstAttribute="leading" secondItem="PvW-cN-3TD" secondAttribute="leading" id="fFC-Om-hYw"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="rJY-po-Agh" secondAttribute="bottom" id="mlM-WA-Qdf"/>
                                                 <constraint firstItem="9nx-DA-Y05" firstAttribute="trailing" secondItem="VFy-8J-8bR" secondAttribute="trailing" id="q1h-z9-PZq"/>
                                                 <constraint firstItem="VFy-8J-8bR" firstAttribute="centerY" secondItem="PvW-cN-3TD" secondAttribute="centerY" id="rOa-HT-cNu"/>
                                                 <constraint firstItem="VFy-8J-8bR" firstAttribute="top" secondItem="9nx-DA-Y05" secondAttribute="bottom" constant="14" id="vbO-Jh-Z7X"/>
@@ -626,7 +627,7 @@ Long - approx 10 years</string>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="gYG-vD-SwF">
-                                        <rect key="frame" x="0.0" y="366" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="319" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gYG-vD-SwF" id="XON-Er-WuM">
                                             <frame key="frameInset" width="320" height="43"/>

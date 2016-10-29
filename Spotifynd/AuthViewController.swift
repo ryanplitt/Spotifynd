@@ -14,6 +14,8 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
     
     var hasValidSession: Bool?
     
+    var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         SPTAuth.defaultInstance().tokenSwapURL = NSURL(string: "https://evening-inlet-81851.herokuapp.com/swap")
@@ -34,6 +36,18 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
                     self.performSegueWithIdentifier("toHomeScreen", sender: self)
                     PlayerController.sharedController.initializePlayer()
                 }
+            }
+            else {
+                SPTAuth.defaultInstance().renewSession(session, callback: { (error, session) in
+                    guard error == nil  else {return}
+                    print("Renew Session Successfully")
+                    PlayerController.session = session
+                    PlayerController.authToken = session.accessToken
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.performSegueWithIdentifier("toHomeScreen", sender: self)
+                        PlayerController.sharedController.initializePlayer()
+                    }
+                })
             }
         }
     }
@@ -93,7 +107,13 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func setupActivityIndicator(){
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.center = view.center
+    }
+    
     func returnFromAppDelegateAuthSession(){
+        activityIndicator.startAnimating()
         if PlayerController.session != nil {
         dispatch_async(dispatch_get_main_queue()) {
             self.performSegueWithIdentifier("toHomeScreen", sender: self)
@@ -102,6 +122,7 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         print(PlayerController.session?.expirationDate)
         print(NSDate())
         } else {
+            activityIndicator.stopAnimating()
             let alert = UIAlertController(title: "Error Logging In", message: "There was a problem using your Spotify app to log you in. Please use the apps login screen to log into Spotify. Note that closing the spotify app before using the app may fix this in the future", preferredStyle: .Alert)
             let okay = UIAlertAction(title: "Okay", style: .Default, handler: { (_) in
                 self.showSpotifyAuthViewController()

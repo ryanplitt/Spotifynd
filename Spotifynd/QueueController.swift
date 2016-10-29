@@ -177,7 +177,7 @@ class QueueController {
     
     
     func createSpotifyPlaylistFromQueueArray() {
-        SPTPlaylistList.createPlaylistWithName("\(NSUUID())", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
+        SPTPlaylistList.createPlaylistWithName("NewMu", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
             if error != nil {
                 print("There was an error making the playlist")
             }

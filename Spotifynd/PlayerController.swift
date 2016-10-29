@@ -220,14 +220,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
     
     
     func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
-        SPTAuth.defaultInstance().session = nil
-        self.saveSessionToUserDefaults(SPTAuth.defaultInstance().session)
-        do {
-        _ = (try player?.stop())
-            
-        } catch {
-            print("error stoping tracks")
-        }
+        try? player?.stop()
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {

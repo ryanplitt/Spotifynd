@@ -19,10 +19,14 @@ class SettingsTableViewController: UITableViewController {
     static let topArtistsRangeNSUserDefaultsKey = "TopArtistsRange"
     static let topArtistsRangeIntDefaultsKey = "TopArtistsRangeInt"
     
+    
+    override func viewWillAppear(animated: Bool) {
+        let indexForSegmentedController = NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeIntDefaultsKey) as? Int ?? 2
+        topArtistsRangeSegmentedController.selectedSegmentIndex = indexForSegmentedController
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        topArtistsRangeSegmentedController.selectedSegmentIndex = NSUserDefaults.standardUserDefaults().integerForKey(SettingsTableViewController.topArtistsRangeIntDefaultsKey)
         artistsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.artistsNSUserDefaultsKey)
         songsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.songNSUserDefaultsKey)
     }
@@ -32,7 +36,7 @@ class SettingsTableViewController: UITableViewController {
         let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
         let onValue = topArtistsRangeSegmentedController.selectedSegmentIndex
         NSUserDefaults.standardUserDefaults().setObject(topAritstRangeDict[onValue], forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey)
-        NSUserDefaults.standardUserDefaults().setInteger(onValue, forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey)
+        NSUserDefaults.standardUserDefaults().setObject(onValue, forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey)
     }
     
     @IBAction func artistsInLibraryCheckValueChanged(sender: AnyObject) {
@@ -59,9 +63,14 @@ class SettingsTableViewController: UITableViewController {
     @IBAction func logOutButtonTapped(sender: AnyObject) {
         let player = PlayerViewController.sharedPlayer.player
         
-        AuthViewController.SPTAuthSharedViewController?.clearCookies({ 
-            player?.logout()
+        guard let session = PlayerController.session else {
+            print("There is no session to save")
+            return
+        }
+        PlayerController.sharedController.saveSessionToUserDefaults(session)
+        AuthViewController.SPTAuthSharedViewController?.clearCookies({
         })
+        player?.logout()
         self.performSegueWithIdentifier("toInitalViewController", sender: self)
     }
     // MARK: - Table view data source
