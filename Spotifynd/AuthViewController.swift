@@ -26,27 +26,39 @@ class AuthViewController: UIViewController, SPTAuthViewDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.returnFromAppDelegateAuthSession), name: "authSuccessful", object: nil )
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillLayoutSubviews() {
         if let sessionData = NSUserDefaults.standardUserDefaults().objectForKey(PlayerController.sessionArchiveKey) as? NSData{
             let session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as! SPTSession
             if session.isValid() {
-                PlayerController.session = session
-                PlayerController.authToken = session.accessToken
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.performSegueWithIdentifier("toHomeScreen", sender: self)
-                    PlayerController.sharedController.initializePlayer()
-                }
+                let activitiyViewController = ActivityViewController(message: "Loading...")
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.presentViewController(activitiyViewController, animated: true, completion: { 
+                        PlayerController.session = session
+                        PlayerController.authToken = session.accessToken
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.performSegueWithIdentifier("toHomeScreen", sender: self)
+                            PlayerController.sharedController.initializePlayer()
+                        }
+                    })
+                })
             }
             else {
-                SPTAuth.defaultInstance().renewSession(session, callback: { (error, session) in
-                    guard error == nil  else {return}
-                    print("Renew Session Successfully")
-                    PlayerController.session = session
-                    PlayerController.authToken = session.accessToken
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.performSegueWithIdentifier("toHomeScreen", sender: self)
-                        PlayerController.sharedController.initializePlayer()
-                    }
+                let activitiyViewController = ActivityViewController(message: "Loading...")
+                dispatch_async(dispatch_get_main_queue(), { 
+                    self.presentViewController(activitiyViewController, animated: true, completion: { 
+                        SPTAuth.defaultInstance().renewSession(session, callback: { (error, session) in
+                            guard error == nil  else {return}
+                            print("Renew Session Successfully")
+                            PlayerController.session = session
+                            PlayerController.authToken = session.accessToken
+                            PlayerController.tokenExpirationDate = session.expirationDate
+                            dispatch_async(dispatch_get_main_queue()) {
+                                
+                                self.performSegueWithIdentifier("toHomeScreen", sender: self)
+                                PlayerController.sharedController.initializePlayer()
+                            }
+                        })
+                    })
                 })
             }
         }

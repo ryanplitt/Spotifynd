@@ -23,6 +23,7 @@
 		FB0C65361D7A2AEB00C409AB /* QueueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C65351D7A2AEB00C409AB /* QueueTableViewCell.swift */; };
 		FB0C657A1D7E06FD00C409AB /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */; };
 		FB1CBEC61D7F5CE400518955 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1CBEC51D7F5CE400518955 /* PlayerController.swift */; };
+		FBE3F2FB1DE3B5D800FF81E3 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE3F2FA1DE3B5D800FF81E3 /* ActivityViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		FB1CBEC51D7F5CE400518955 /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		FBAF413C1D835258005A60A9 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
+		FBE3F2FA1DE3B5D800FF81E3 /* ActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 				FB0C647B1D74B56F00C409AB /* PlayerViewController.swift */,
 				FB0C65791D7E06FD00C409AB /* SettingsTableViewController.swift */,
 				FB0C65351D7A2AEB00C409AB /* QueueTableViewCell.swift */,
+				FBE3F2FA1DE3B5D800FF81E3 /* ActivityViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				FB0C64351D70BDEF00C409AB /* AppDelegate.swift in Sources */,
 				FB1CBEC61D7F5CE400518955 /* PlayerController.swift in Sources */,
 				FB0C657A1D7E06FD00C409AB /* SettingsTableViewController.swift in Sources */,
+				FBE3F2FB1DE3B5D800FF81E3 /* ActivityViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

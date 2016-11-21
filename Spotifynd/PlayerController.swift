@@ -22,6 +22,7 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
     static var session: SPTSession?
     static var authToken: String?
     static var sessionArchiveKey = "SessionArchiveKey"
+    static var tokenExpirationDate: NSDate?
     
     
 
@@ -248,7 +249,4 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
         let sessionData = NSKeyedArchiver.archivedDataWithRootObject(session)
         NSUserDefaults.standardUserDefaults().setObject(sessionData, forKey: PlayerController.sessionArchiveKey)
     }
-    
-    
-    
 }
