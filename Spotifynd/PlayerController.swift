@@ -221,12 +221,12 @@ class PlayerController: NSObject, SPTAudioStreamingDelegate, SPTAudioStreamingPl
     
     
     func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
-        try? player?.stop()
+        _ = try? player?.stop()
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
         self.isPlaying = isPlaying
-//        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
+        NSNotificationCenter.defaultCenter().postNotificationName("updateUI", object: nil)
     }
     
     

@@ -110,7 +110,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func updateUI() {
         updateTableView()
         if self.player?.metadata == nil || self.player?.metadata.currentTrack == nil {
-//                        self.albumImage.image = nil
+                        self.albumImage.image = nil
         } else {
             
             self.nextButton.enabled = self.player?.metadata.nextTrack != nil

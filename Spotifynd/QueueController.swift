@@ -38,30 +38,6 @@ class QueueController {
                 queue.removeAtIndex(index!)
             }
         }
-        dispatch_group_notify(removeTrackGroup, dispatch_get_main_queue()) { 
-//            self.spotifyndPlaylist?.removeTracksFromPlaylist(tracksToRemove, withAccessToken: PlayerController.authToken, callback: { (error) in
-//                if error != nil {
-//                    print("There was an error removing the tracks from the playlist")
-//                }
-//                completion()
-//            })
-            
-            
-//            let request = (try? SPTPlaylistSnapshot.createRequestForRemovingTracks(tracksToRemove, fromPlaylist: NSURL(string:(self.spotifyndPlaylist?.uri.absoluteString)!), withAccessToken: PlayerController.authToken, snapshot: self.spotifyndPlaylist?.snapshotId))
-//            SPTRequest.sharedHandler().performRequest(request, callback: { (error, response, data) in
-//                if error != nil {
-//                    print(error)
-//                    print(error.localizedDescription)
-//                    print("There was an error removing the tracks from the playlist")
-//                }
-//                if response != nil {
-//                    print(response)
-//                }
-//            })
-//            PlayerController.sharedController.setupPlayerFromQueue({ 
-//                // competion
-//            })
-        }
     }
     
     func setQueueFromArtist(artistURI: String, completion: (() -> Void)?){

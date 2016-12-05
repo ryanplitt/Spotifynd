@@ -222,7 +222,6 @@ class HomeScreenViewController: UIViewController, UISearchResultsUpdating, UITab
                         dispatch_async(dispatch_get_main_queue(), {
                             QueueController.sharedController.setQueueFromArtist(artist.uri.absoluteString!, completion: {
                                 NSNotificationCenter.defaultCenter().postNotificationName("setupPlayer", object: nil)
-                                //                NSNotificationCenter.defaultCenter().postNotificationName("setupAppearance", object: nil)
                             })
                         })
                     })
