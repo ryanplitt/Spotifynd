@@ -21,20 +21,20 @@ class SearchResultsTableViewController: UITableViewController {
     
     // MARK: - Table view data source
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return SearchController.results.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("resultsCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "resultsCell", for: indexPath)
         
         cell.textLabel?.text = SearchController.results[indexPath.row].name
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.didSelectedCell(SearchController.results[indexPath.row])
     }
     
@@ -86,5 +86,5 @@ class SearchResultsTableViewController: UITableViewController {
 }
 
 protocol SearchResultsControllerDelegate {
-    func didSelectedCell(partialArtist: SPTPartialArtist)
+    func didSelectedCell(_ partialArtist: SPTPartialArtist)
 }

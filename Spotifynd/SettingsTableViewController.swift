@@ -20,47 +20,47 @@ class SettingsTableViewController: UITableViewController {
     static let topArtistsRangeIntDefaultsKey = "TopArtistsRangeInt"
     
     
-    override func viewWillAppear(animated: Bool) {
-        let indexForSegmentedController = NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeIntDefaultsKey) as? Int ?? 2
+    override func viewWillAppear(_ animated: Bool) {
+        let indexForSegmentedController = UserDefaults.standard.object(forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey) as? Int ?? 2
         topArtistsRangeSegmentedController.selectedSegmentIndex = indexForSegmentedController
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        artistsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.artistsNSUserDefaultsKey)
-        songsInLibraryCheckSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.songNSUserDefaultsKey)
+        artistsInLibraryCheckSwitch.isOn = UserDefaults.standard.bool(forKey: SettingsTableViewController.artistsNSUserDefaultsKey)
+        songsInLibraryCheckSwitch.isOn = UserDefaults.standard.bool(forKey: SettingsTableViewController.songNSUserDefaultsKey)
     }
 
     
-    @IBAction func artistsRangeSegmentValueChanged(sender: AnyObject) {
+    @IBAction func artistsRangeSegmentValueChanged(_ sender: AnyObject) {
         let topAritstRangeDict = [0:"short_term",1:"medium_term",2:"long_term"]
         let onValue = topArtistsRangeSegmentedController.selectedSegmentIndex
-        NSUserDefaults.standardUserDefaults().setObject(topAritstRangeDict[onValue], forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey)
-        NSUserDefaults.standardUserDefaults().setObject(onValue, forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey)
+        UserDefaults.standard.set(topAritstRangeDict[onValue], forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey)
+        UserDefaults.standard.set(onValue, forKey: SettingsTableViewController.topArtistsRangeIntDefaultsKey)
     }
     
-    @IBAction func artistsInLibraryCheckValueChanged(sender: AnyObject) {
+    @IBAction func artistsInLibraryCheckValueChanged(_ sender: AnyObject) {
         
-        let value = artistsInLibraryCheckSwitch.on
-        NSUserDefaults.standardUserDefaults().setBool(value, forKey: SettingsTableViewController.artistsNSUserDefaultsKey)
+        let value = artistsInLibraryCheckSwitch.isOn
+        UserDefaults.standard.set(value, forKey: SettingsTableViewController.artistsNSUserDefaultsKey)
         if value {
-            songsInLibraryCheckSwitch.on = true
-            songsInLibraryCheckSwitch.enabled = false
+            songsInLibraryCheckSwitch.isOn = true
+            songsInLibraryCheckSwitch.isEnabled = false
         }
         if !value {
-            songsInLibraryCheckSwitch.enabled = true
+            songsInLibraryCheckSwitch.isEnabled = true
         }
     }
     
-    @IBAction func songsInLibraryCheckValueChanged(sender: AnyObject) {
-        let value = songsInLibraryCheckSwitch.on
-        NSUserDefaults.standardUserDefaults().setBool(value, forKey: SettingsTableViewController.songNSUserDefaultsKey)
+    @IBAction func songsInLibraryCheckValueChanged(_ sender: AnyObject) {
+        let value = songsInLibraryCheckSwitch.isOn
+        UserDefaults.standard.set(value, forKey: SettingsTableViewController.songNSUserDefaultsKey)
         if value {
             return
         }
     }
 
-    @IBAction func logOutButtonTapped(sender: AnyObject) {
+    @IBAction func logOutButtonTapped(_ sender: AnyObject) {
         let player = PlayerViewController.sharedPlayer.player
         
         guard let session = PlayerController.session else {
@@ -71,7 +71,7 @@ class SettingsTableViewController: UITableViewController {
         AuthViewController.SPTAuthSharedViewController?.clearCookies({
         })
         player?.logout()
-        self.performSegueWithIdentifier("toInitalViewController", sender: self)
+        self.performSegue(withIdentifier: "toInitalViewController", sender: self)
     }
     // MARK: - Table view data source
 

@@ -16,15 +16,15 @@ class SearchController {
     static var results: [SPTPartialArtist] = []
     static var topArtists: [SPTArtist] = [] {
         didSet{
-            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: "topArtistLoaded", object: nil))
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "topArtistLoaded"), object: nil))
         }
     }
     static var range: String?
     
-    static func searchForArtist(name: String, completion: () -> Void){
-        SPTSearch.performSearchWithQuery(name, queryType: .QueryTypeArtist, accessToken: PlayerController.authToken) { (error, list) in
+    static func searchForArtist(_ name: String, completion: @escaping () -> Void){
+        SPTSearch.perform(withQuery: name, queryType: .queryTypeArtist, accessToken: PlayerController.authToken) { (error, list) in
             if error != nil {
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
                 completion()
                 return
             }
@@ -37,33 +37,33 @@ class SearchController {
     }
     
     func getUsersTopArtistsForHomeScreen(){
-        dispatch_async(dispatch_get_main_queue()) {
-            if NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) == nil {
+        DispatchQueue.main.async {
+            if UserDefaults.standard.object(forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) == nil {
                 SearchController.range = "long_term"
             } else {
-                SearchController.range = NSUserDefaults.standardUserDefaults().objectForKey(SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) as! String
+                SearchController.range = UserDefaults.standard.object(forKey: SettingsTableViewController.topArtistsRangeNSUserDefaultsKey) as! String
             }
-            var responseResponse: NSURLResponse?
-            var responseData: NSData?
-            var listPage = SPTListPage?()
-            var request: NSURLRequest?
+            var responseResponse: URLResponse?
+            var responseData: Data?
+            var listPage: SPTListPage?
+            var request: URLRequest?
             do {
-                request = try SPTRequest.createRequestForURL(NSURL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: PlayerController.authToken, httpMethod: "GET", values: ["time_range":SearchController.range!,"limit":20], valueBodyIsJSON: true, sendDataAsQueryString: true)
+                request = try SPTRequest.createRequest(for: URL(string: "https://api.spotify.com/v1/me/top/artists"), withAccessToken: PlayerController.authToken, httpMethod: "GET", values: ["time_range":SearchController.range!,"limit":20], valueBodyIsJSON: true, sendDataAsQueryString: true)
             } catch {
                 print("error getting request")
             }
-            let artistFetchGroup = dispatch_group_create()
-            dispatch_group_enter(artistFetchGroup)
-            SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+            let artistFetchGroup = DispatchGroup()
+            artistFetchGroup.enter()
+            SPTRequest.sharedHandler().perform(request) { (error, response, data) in
                 guard data != nil else {print("data was nil") ; return}
                 responseResponse = response
                 responseData = data
-                dispatch_group_leave(artistFetchGroup)
+                artistFetchGroup.leave()
             }
-            dispatch_group_notify(artistFetchGroup, dispatch_get_main_queue(), {
+            artistFetchGroup.notify(queue: DispatchQueue.main, execute: {
                 print("Group Dispatch working")
                 do {
-                    listPage = try SPTListPage(fromData: responseData, withResponse: responseResponse, expectingPartialChildren: false, rootObjectKey: nil)
+                    listPage = try SPTListPage(from: responseData, with: responseResponse, expectingPartialChildren: false, rootObjectKey: nil)
                     SearchController.topArtists = listPage?.items.flatMap({$0}) as! [SPTArtist]
                 } catch { print("There was an error setting ListPage") }
             })

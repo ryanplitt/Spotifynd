@@ -157,7 +157,7 @@
 					FB0C64301D70BDEF00C409AB = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = H4854S58A9;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0810;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -339,7 +339,7 @@
 				PRODUCT_NAME = NewMu;
 				SWIFT_OBJC_BRIDGING_HEADER = "Spotifynd/Spotifynd-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -360,7 +360,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.RyanPlitt.Spotifynd;
 				PRODUCT_NAME = NewMu;
 				SWIFT_OBJC_BRIDGING_HEADER = "Spotifynd/Spotifynd-Bridging-Header.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

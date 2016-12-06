@@ -31,22 +31,22 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateTableView), name: "queueUpdated", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollToSong), name: "indexPathChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupPlayer), name: "setupPlayer", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: "setupAppearance", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateUI), name: "updateUI", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(setPlayPauseButton), name: "isPlayingValueChanged", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateSlider), name: "updatingPostionOfTrack", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTableView), name: NSNotification.Name(rawValue: "queueUpdated"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollToSong), name: NSNotification.Name(rawValue: "indexPathChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setupPlayer), name: NSNotification.Name(rawValue: "setupPlayer"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setupInitialPlayerAppearance), name: NSNotification.Name(rawValue: "setupAppearance"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: NSNotification.Name(rawValue: "updateUI"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setPlayPauseButton), name: NSNotification.Name(rawValue: "isPlayingValueChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSlider), name: NSNotification.Name(rawValue: "updatingPostionOfTrack"), object: nil)
         
         setupGestureRecognizers()
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         setupSlider()
         if player?.playbackState != nil {
             updateUI()
@@ -57,15 +57,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func setupGestureRecognizers(){
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToDownSwipeGesture))
-        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        swipeDown.direction = UISwipeGestureRecognizerDirection.down
         albumImage.addGestureRecognizer(swipeDown)
         
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(respondToRightSwipeGesture))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
         albumImage.addGestureRecognizer(swipeRight)
         
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(respondToLeftSwipeGesture))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
         albumImage.addGestureRecognizer(swipeLeft)
     }
     
@@ -73,7 +73,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func setupInitialPlayerAppearance() {
         PlayerController.sharedController.initializeFirstTrackForPlaying { (track) in
             self.titleLabel.text = track.name
-            self.artistLabel.text = track.artists?.first?.name
+            self.artistLabel.text = (track.artists?.first as AnyObject).name
             guard let url = track.album?.largestCover?.imageURL else {return}
             QueueController.sharedController.getImageFromURL(url, completion: { (image) in
                 self.albumImage.image = image
@@ -96,7 +96,7 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func setupSlider() {
         sliderPlaybackBar.value = 0
         sliderPlaybackBar.tintColor = UIColor ( red: 0.0042, green: 0.1546, blue: 1.0, alpha: 1.0 )
-        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb0"), forState: .Normal)
+        sliderPlaybackBar.setThumbImage(UIImage(named: "thumb0"), for: UIControlState())
     }
     
     func updateSlider(){
@@ -113,17 +113,17 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
                         self.albumImage.image = nil
         } else {
             
-            self.nextButton.enabled = self.player?.metadata.nextTrack != nil
-            self.backButton.enabled = self.player?.metadata.prevTrack != nil
+            self.nextButton.isEnabled = self.player?.metadata.nextTrack != nil
+            self.backButton.isEnabled = self.player?.metadata.prevTrack != nil
             self.titleLabel.text = self.player?.metadata.currentTrack?.name
             self.artistLabel.text = self.player?.metadata.currentTrack?.artistName
             
-            SPTTrack.trackWithURI(NSURL(string: (self.player?.metadata.currentTrack?.uri)!), session: PlayerController.session) { (error, trackdata) in
+            SPTTrack.track(withURI: URL(string: (self.player?.metadata.currentTrack?.uri)!), session: PlayerController.session) { (error, trackdata) in
                 let track = trackdata as! SPTTrack
                 let imageURL = track.album?.largestCover?.imageURL
                 guard let image = imageURL else {return}
                 QueueController.sharedController.getImageFromURL(image, completion: { (image) in
-                    dispatch_async(dispatch_get_main_queue(), { 
+                    DispatchQueue.main.async(execute: { 
                         self.albumImage.image = image
                         PlayerController.sharedController.currentSongAlbumArtwork = image
                         guard let playbackTrack = self.player?.metadata?.currentTrack else {return}
@@ -135,44 +135,44 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func scrollToSong(){
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             if PlayerController.sharedController.indexPathRowofCurrentSong != nil {
-                self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: PlayerController.sharedController.indexPathRowofCurrentSong!, inSection: 0), atScrollPosition: .Middle, animated: true)
+                self.tableView.scrollToRow(at: IndexPath(row: PlayerController.sharedController.indexPathRowofCurrentSong!, section: 0), at: .middle, animated: true)
             }
         }
     }
     
     func toggleRepeat(){
         if !(PlayerController.sharedController.player?.playbackState?.isRepeating)! {
-            repeatButton.setImage(UIImage(named: "repeat"), forState: .Normal)
+            repeatButton.setImage(UIImage(named: "repeat"), for: UIControlState())
         } else {
-            repeatButton.setImage(UIImage(named: "repeat-empty"), forState: .Normal)
+            repeatButton.setImage(UIImage(named: "repeat-empty"), for: UIControlState())
         }
     }
     
-    @IBAction func collapseButtonTapped(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true) { 
+    @IBAction func collapseButtonTapped(_ sender: AnyObject) {
+        self.dismiss(animated: true) { 
         }
     }
     
-    func respondToDownSwipeGesture(gesture: UIGestureRecognizer) {
-        self.dismissViewControllerAnimated(true) {
+    func respondToDownSwipeGesture(_ gesture: UIGestureRecognizer) {
+        self.dismiss(animated: true) {
         }
     }
     
-    func respondToRightSwipeGesture(gesture: UIGestureRecognizer) {
+    func respondToRightSwipeGesture(_ gesture: UIGestureRecognizer) {
         self.backButtonTapped(self)
     }
     
-    func respondToLeftSwipeGesture(gesture: UIGestureRecognizer) {
+    func respondToLeftSwipeGesture(_ gesture: UIGestureRecognizer) {
         self.nextButtonTapped(self)
     }
     
     
     
-    @IBAction func playButtonTapped(sender: AnyObject) {
+    @IBAction func playButtonTapped(_ sender: AnyObject) {
         guard player != nil else { return }
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             if self.player?.playbackState == nil {
                 PlayerController.sharedController.initializePlaylistForPlayback({
                     PlayerController.sharedController.playPauseFuction()
@@ -186,25 +186,25 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func setPlayPauseButton(){
         guard player?.playbackState != nil else {
-            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
+            self.playPauseButton.setImage(UIImage(named: "pause"), for: UIControlState())
             return
         }
         if self.player?.playbackState.isPlaying == true {
-            self.playPauseButton.setImage(UIImage(named: "pause"), forState: .Normal)
+            self.playPauseButton.setImage(UIImage(named: "pause"), for: UIControlState())
         } else {
-            self.playPauseButton.setImage(UIImage(named: "play"), forState: .Normal)
+            self.playPauseButton.setImage(UIImage(named: "play"), for: UIControlState())
         }
     }
     
-    @IBAction func nextButtonTapped(sender: AnyObject) {
+    @IBAction func nextButtonTapped(_ sender: AnyObject) {
         player?.skipNext({ (error) in
             if error != nil {
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
             }
         })
     }
     
-    @IBAction func repeatButtonTapped(sender: AnyObject) {
+    @IBAction func repeatButtonTapped(_ sender: AnyObject) {
         // TODO:
         guard player != nil && player?.playbackState != nil else {return}
         if player?.playbackState.isRepeating == true {
@@ -217,10 +217,10 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    @IBAction func moreButtonTapped(sender: AnyObject) {
-        let actionsheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    @IBAction func moreButtonTapped(_ sender: AnyObject) {
+        let actionsheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let removeArtistTracks = UIAlertAction(title: "Remove Tracks From This Artist", style: .Default) { (_) in
+        let removeArtistTracks = UIAlertAction(title: "Remove Tracks From This Artist", style: .default) { (_) in
             let currentArtistName = self.player?.metadata.currentTrack?.artistName
             self.player?.skipNext({ (error) in
                 if error != nil {
@@ -232,15 +232,15 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
             })
         }
         
-        let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .Default) { (_) in
+        let addMoreSongs = UIAlertAction(title: "Add More Songs Like This", style: .default) { (_) in
             QueueController.sharedController.addMoreSongsBasedOnThisArtist()
         }
         
-        let addToSaved = UIAlertAction(title: "Add Song To Saved Tracks", style: .Default) { (_) in
+        let addToSaved = UIAlertAction(title: "Add Song To Saved Tracks", style: .default) { (_) in
             PlayerController.sharedController.addSongToSavedTracks()
         }
         
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
         }
         
         actionsheet.addAction(removeArtistTracks)
@@ -255,17 +255,17 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         actionsheet.addAction(cancel)
         
-        presentViewController(actionsheet, animated: true) { 
+        present(actionsheet, animated: true) { 
             // completion
         }
         
         
     }
     
-    @IBAction func backButtonTapped(sender: AnyObject) {
+    @IBAction func backButtonTapped(_ sender: AnyObject) {
         player?.skipPrevious({ (error) in
             if error != nil {
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
             }
         })
     }
@@ -274,32 +274,32 @@ class PlayerViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.reloadData()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return QueueController.sharedController.queue.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier("queueCell", forIndexPath: indexPath) as? QueueTableViewCell else {return UITableViewCell()}
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "queueCell", for: indexPath) as? QueueTableViewCell else {return UITableViewCell()}
         
         let song = QueueController.sharedController.queue[indexPath.row]
-        let title = song.name
-        let artist = song.artists.first!.name!
+        let title = song.name!
+        let artist = (song.artists.first! as! SPTPartialArtist).name!
         
         cell.updateCellWithTrack(title, artist: artist)
         
         if player?.metadata != nil {
             if song.uri.absoluteString == player?.metadata.currentTrack?.uri {
                 PlayerController.sharedController.indexPathRowofCurrentSong = indexPath.row
-                cell.nowPlayingImage.hidden = false
+                cell.nowPlayingImage.isHidden = false
             } else {
-                cell.nowPlayingImage.hidden = true
+                cell.nowPlayingImage.isHidden = true
             }
         }
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        player?.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWithIndex: UInt(indexPath.row), startingWithPosition: 0, callback: { (error) in
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        player?.playSpotifyURI(QueueController.sharedController.spotifyndPlaylist?.uri.absoluteString, startingWith: UInt(indexPath.row), startingWithPosition: 0, callback: { (error) in
             if error != nil {
                 print("There was a problem playing the selected track")
             }

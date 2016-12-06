@@ -19,28 +19,28 @@ class QueueController {
     
     var queue: [SPTTrack] = [] {
         didSet{
-            NSNotificationCenter.defaultCenter().postNotificationName("queueUpdated", object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "queueUpdated"), object: nil)
         }
     }
     
-    var timeStampOfPlaylistMade: NSDate?
+    var timeStampOfPlaylistMade: Date?
     
     // MARK: Queue Management
     
-    func removeTracksArtistFromQueue(artistName: String, completion: () -> Void) {
+    func removeTracksArtistFromQueue(_ artistName: String, completion: () -> Void) {
         var tracksToRemove: [SPTPartialTrack] = []
-        let removeTrackGroup = dispatch_group_create()
+        let removeTrackGroup = DispatchGroup()
         for song in queue {
-            if song.artists.first?.name  == artistName {
+            if (song.artists.first as AnyObject).name  == artistName {
                 tracksToRemove.append(song)
-                let index = queue.indexOf(song)
+                let index = queue.index(of: song)
                 guard index != nil else { return }
-                queue.removeAtIndex(index!)
+                queue.remove(at: index!)
             }
         }
     }
     
-    func setQueueFromArtist(artistURI: String, completion: (() -> Void)?){
+    func setQueueFromArtist(_ artistURI: String, completion: (() -> Void)?){
         self.getSPTArtistFromURI(artistURI) { (artist) in // Step 1
             self.getRelatedArtists(artist, completion: { (artistsArray) in // Step 2
                 self.getTopTracksForArtists(artistsArray, completion: { (arrayOfTracks) in // Step 3
@@ -58,11 +58,11 @@ class QueueController {
     }
     
     // Step 1: Get Artist
-    func getSPTArtistFromURI(artistURI: String, completion: (SPTArtist) -> Void){
-        SPTArtist.artistWithURI(NSURL(string: artistURI), session: PlayerController.session) { (error, artistInfo) in
+    func getSPTArtistFromURI(_ artistURI: String, completion: @escaping (SPTArtist) -> Void){
+        SPTArtist.artist(withURI: URL(string: artistURI), session: PlayerController.session) { (error, artistInfo) in
             if error != nil {
                 print(error)
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
                 print("There was an error obtaining the artist from the URI")
             }
             let artist = artistInfo as! SPTArtist
@@ -71,10 +71,10 @@ class QueueController {
     }
     
     //Step 2: Get Related Artists From Artist
-    func getRelatedArtists(artist: SPTArtist, completion: ([SPTArtist]) -> Void) {
-        artist.requestRelatedArtistsWithAccessToken(PlayerController.authToken) { (error, artistsList) in
+    func getRelatedArtists(_ artist: SPTArtist, completion: @escaping ([SPTArtist]) -> Void) {
+        artist.requestRelatedArtists(withAccessToken: PlayerController.authToken) { (error, artistsList) in
             if error != nil {
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
                 completion([])
                 return
             }
@@ -84,97 +84,97 @@ class QueueController {
     }
     
     //Step 3: Get Artist Top Tracks For Artist
-    func getTopTracksForArtists(artists: [SPTArtist], completion: (arrayOfTracks: [SPTTrack]) -> Void){
+    func getTopTracksForArtists(_ artists: [SPTArtist], completion: @escaping (_ arrayOfTracks: [SPTTrack]) -> Void){
         var tracks: [SPTTrack] = []
-        let topArtistGroup = dispatch_group_create()
+        let topArtistGroup = DispatchGroup()
         var counter: Int = 0
         for artist in artists {
-            dispatch_group_enter(topArtistGroup)
+            topArtistGroup.enter()
             self.getArtistTopTracks(artist, completion: { (tracksArray) in
                 tracks = tracks + tracksArray
                 counter += 1
-                dispatch_group_leave(topArtistGroup)
+                topArtistGroup.leave()
             })
         }
-        dispatch_group_notify(topArtistGroup, dispatch_get_main_queue()) { 
+        topArtistGroup.notify(queue: DispatchQueue.main) { 
             if counter == artists.count {
-                completion(arrayOfTracks: tracks)
+                completion(tracks)
             }
         }
     }
     
     //Helper Method for Step 3
-    func getArtistTopTracks(artist: SPTArtist, numberOfTracks: Int = 3, completion: (tracksArray: [SPTTrack]) -> Void){
-        let artistTopTrackGroup = dispatch_group_create()
-        artist.requestTopTracksForTerritory("US", withAccessToken: PlayerController.authToken) { (error, trackslist) in
-            dispatch_group_enter(artistTopTrackGroup)
+    func getArtistTopTracks(_ artist: SPTArtist, numberOfTracks: Int = 3, completion: @escaping (_ tracksArray: [SPTTrack]) -> Void){
+        let artistTopTrackGroup = DispatchGroup()
+        artist.requestTopTracks(forTerritory: "US", withAccessToken: PlayerController.authToken) { (error, trackslist) in
+            artistTopTrackGroup.enter()
             if error != nil {
-                print(error.localizedDescription)
-                completion(tracksArray: [])
+                print(error?.localizedDescription)
+                completion([])
                 return
             }
             var tracks = trackslist as! [SPTTrack]
             tracks = Array(tracks.prefix(numberOfTracks))
-            dispatch_group_leave(artistTopTrackGroup)
-            dispatch_group_notify(artistTopTrackGroup, dispatch_get_main_queue(), { 
-                completion(tracksArray: tracks)
+            artistTopTrackGroup.leave()
+            artistTopTrackGroup.notify(queue: DispatchQueue.main, execute: { 
+                completion(tracks)
             })
             
         }
     }
     
     //Step 4: Randomize the array of tracks
-    func randomizeArrayOfTracks(arrayOfTracks: [SPTTrack], completion: (randomizedArray:[SPTTrack]) -> Void) {
+    func randomizeArrayOfTracks(_ arrayOfTracks: [SPTTrack], completion: @escaping (_ randomizedArray:[SPTTrack]) -> Void) {
         var randomizedArray: [SPTTrack] = []
-        let trackRandomizingGroup = dispatch_group_create()
+        let trackRandomizingGroup = DispatchGroup()
         for track in arrayOfTracks {
-            dispatch_group_enter(trackRandomizingGroup)
-            randomizedArray.insert(track, atIndex: Int(arc4random_uniform(UInt32(randomizedArray.count))))
-            dispatch_group_leave(trackRandomizingGroup)
+            trackRandomizingGroup.enter()
+            randomizedArray.insert(track, at: Int(arc4random_uniform(UInt32(randomizedArray.count))))
+            trackRandomizingGroup.leave()
         }
-        dispatch_group_notify(trackRandomizingGroup, dispatch_get_main_queue()) { 
-            completion(randomizedArray: randomizedArray)
+        trackRandomizingGroup.notify(queue: DispatchQueue.main) { 
+            completion(randomizedArray)
         }
     }
     
     //Step 5: Check if queue matches the Newmu playlist
-    func checkIfQueueIsInPlaylist(completion: (success: Bool) -> Void){
-        SPTPlaylistSnapshot.playlistWithURI(QueueController.sharedController.spotifyndPlaylist?.uri, session: PlayerController.session) { (error, playlistData) in
+    func checkIfQueueIsInPlaylist(_ completion: @escaping (_ success: Bool) -> Void){
+        SPTPlaylistSnapshot.playlist(withURI: QueueController.sharedController.spotifyndPlaylist?.uri, session: PlayerController.session) { (error, playlistData) in
             let playlist = playlistData as! SPTPlaylistSnapshot
             let firstpage = playlist.firstTrackPage
             guard let firstSong = firstpage?.items?.first as? SPTPartialTrack else {return}
             if firstSong.name == QueueController.sharedController.queue.first?.name {
-                completion(success: true)
+                completion(true)
             } else {
-                completion(success: false)
+                completion(false)
             }
         }
     }
     
     
     func createSpotifyPlaylistFromQueueArray() {
-        SPTPlaylistList.createPlaylistWithName("NewMu", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
+        SPTPlaylistList.createPlaylist(withName: "NewMu", publicFlag: false, session: PlayerController.session) { (error, playlistSnapshot) in
             if error != nil {
                 print("There was an error making the playlist")
             }
-            playlistSnapshot.addTracksToPlaylist(self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
+            playlistSnapshot?.addTracks(toPlaylist: self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
                 if error != nil {
                     print("There was an error adding the tracks to the new playlist")
                 }
             })
-            print(playlistSnapshot.uri)
+            print(playlistSnapshot?.uri)
             self.spotifyndPlaylist = playlistSnapshot
-            NSUserDefaults.standardUserDefaults().setObject(playlistSnapshot.uri.absoluteString, forKey: QueueController.nsUserDefaultsURIKey)
+            UserDefaults.standard.set(playlistSnapshot?.uri.absoluteString, forKey: QueueController.nsUserDefaultsURIKey)
         }
     }
     
-    func updateExistingSpotifyPlaylistFromQueueArray(completion: (() -> Void)?) {
+    func updateExistingSpotifyPlaylistFromQueueArray(_ completion: (() -> Void)?) {
         guard spotifyndPlaylist != nil else {
             sleep(1)
             updateExistingSpotifyPlaylistFromQueueArray(nil)
             return
         }
-                self.spotifyndPlaylist?.replaceTracksInPlaylist(self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
+                self.spotifyndPlaylist?.replaceTracks(inPlaylist: self.queue, withAccessToken: PlayerController.authToken, callback: { (error) in
                     if error != nil {
                         print("There was an error replacing the playlist..")
                     } else {
@@ -185,25 +185,25 @@ class QueueController {
     }
     
     
-    func checkIfSpotifyndPlaylistExists(completion: ((success: Bool) -> Void)?) {
-        guard let uriString = NSUserDefaults.standardUserDefaults().objectForKey(QueueController.nsUserDefaultsURIKey) as? String,
-            let uri = NSURL(string: uriString) else {
+    func checkIfSpotifyndPlaylistExists(_ completion: ((_ success: Bool) -> Void)?) {
+        guard let uriString = UserDefaults.standard.object(forKey: QueueController.nsUserDefaultsURIKey) as? String,
+            let uri = URL(string: uriString) else {
                 print("There was no URI")
-                completion?(success: false)
+                completion?(false)
                 return
         }
         guard SPTPlaylistSnapshot.isPlaylistURI(uri) else {
             print("The URI was not a matching playlist")
-            completion?(success: false)
+            completion?(false)
             return
         }
         setupSpotifyndPlaylist(uri) { 
-            completion?(success: true)
+            completion?(true)
         }
     }
     
-    func setupSpotifyndPlaylist(uri: NSURL, completion: () -> Void) {
-        SPTPlaylistSnapshot.playlistWithURI(uri, session: PlayerController.session) { (error, playlistSnapshotData) in
+    func setupSpotifyndPlaylist(_ uri: URL, completion: @escaping () -> Void) {
+        SPTPlaylistSnapshot.playlist(withURI: uri, session: PlayerController.session) { (error, playlistSnapshotData) in
             let playlistSnapshot = playlistSnapshotData as! SPTPlaylistSnapshot
             self.spotifyndPlaylist = playlistSnapshot
             completion()
@@ -219,99 +219,99 @@ class QueueController {
         }
     }
     
-    func addSongsToEndOfSpotifyndPlaylist(arrayOfTracks: [SPTTrack]){
-        QueueController.sharedController.spotifyndPlaylist?.addTracksWithPositionToPlaylist(arrayOfTracks, withPosition: Int32(self.queue.count), session: PlayerController.session, callback: { (error) in
+    func addSongsToEndOfSpotifyndPlaylist(_ arrayOfTracks: [SPTTrack]){
+        QueueController.sharedController.spotifyndPlaylist?.addTracksWithPosition(toPlaylist: arrayOfTracks, withPosition: Int32(self.queue.count), session: PlayerController.session, callback: { (error) in
             if error != nil {
                 print(error)
-                print(error.localizedDescription)
+                print(error?.localizedDescription)
                 print("There was a problem adding the new tracks to the playlist")
             }
         })
     }
     
-    func queueSongToArray(track: SPTTrack) {
+    func queueSongToArray(_ track: SPTTrack) {
         queue.append(track)
     }
     
-    func removeTrackFromQueue(track: SPTTrack) {
-        let index = queue.indexOf(track)
+    func removeTrackFromQueue(_ track: SPTTrack) {
+        let index = queue.index(of: track)
         guard index != nil else {
             print("Could not find track in queue.")
             return
         }
-        queue.removeAtIndex(index!)
+        queue.remove(at: index!)
     }
     
-    func checkIfArrayMatchesSavedTracks(arrayOfTracks: [SPTTrack], completion: (newArrayOfTracks: [SPTTrack]) -> Void){
-        if NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.songNSUserDefaultsKey) == true {
-            let matchedSavedTracksGroup = dispatch_group_create()
+    func checkIfArrayMatchesSavedTracks(_ arrayOfTracks: [SPTTrack], completion: @escaping (_ newArrayOfTracks: [SPTTrack]) -> Void){
+        if UserDefaults.standard.bool(forKey: SettingsTableViewController.songNSUserDefaultsKey) == true {
+            let matchedSavedTracksGroup = DispatchGroup()
             var newArrayOfTracks: [SPTTrack] = []
             for song in arrayOfTracks {
-                dispatch_group_enter(matchedSavedTracksGroup)
-                let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
-                SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+                matchedSavedTracksGroup.enter()
+                let request = (try? SPTYourMusic.createRequest(forCheckingIfSavedTracksContains: [song], forUserWithAccessToken: PlayerController.authToken))
+                SPTRequest.sharedHandler().perform(request) { (error, response, data) in
                     
                     if data != nil {
-                        guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                        guard let list = (try? JSONSerialization.jsonObject(with: data!, options: .allowFragments)) as? [Bool] else {return}
                         if list.first == false {
                             newArrayOfTracks.append(song)
-                            dispatch_group_leave(matchedSavedTracksGroup)
+                            matchedSavedTracksGroup.leave()
                         } else {
-                            dispatch_group_leave(matchedSavedTracksGroup)
+                            matchedSavedTracksGroup.leave()
                         }
                     } else {
-                        dispatch_group_leave(matchedSavedTracksGroup)
+                        matchedSavedTracksGroup.leave()
                     }
                 }
             }
-            dispatch_group_notify(matchedSavedTracksGroup, dispatch_get_main_queue()) {
-                completion(newArrayOfTracks: newArrayOfTracks)
+            matchedSavedTracksGroup.notify(queue: DispatchQueue.main) {
+                completion(newArrayOfTracks)
             }
         } else {
-            completion(newArrayOfTracks: arrayOfTracks)
+            completion(arrayOfTracks)
         }
     }
     
-    func checkIfQueueMatchesSavedArtists(arrayOfTracks: [SPTTrack], completion: (newArray: [SPTTrack]) -> Void){
-        if NSUserDefaults.standardUserDefaults().boolForKey(SettingsTableViewController.artistsNSUserDefaultsKey) == true {
-            let matchedSavedArtistsGroup = dispatch_group_create()
+    func checkIfQueueMatchesSavedArtists(_ arrayOfTracks: [SPTTrack], completion: @escaping (_ newArray: [SPTTrack]) -> Void){
+        if UserDefaults.standard.bool(forKey: SettingsTableViewController.artistsNSUserDefaultsKey) == true {
+            let matchedSavedArtistsGroup = DispatchGroup()
             var newArrayOfTracks: [SPTTrack] = []
             for song in arrayOfTracks {
-               dispatch_group_enter(matchedSavedArtistsGroup)
-                let request = (try? SPTYourMusic.createRequestForCheckingIfSavedTracksContains([song], forUserWithAccessToken: PlayerController.authToken))
-                SPTRequest.sharedHandler().performRequest(request) { (error, response, data) in
+               matchedSavedArtistsGroup.enter()
+                let request = (try? SPTYourMusic.createRequest(forCheckingIfSavedTracksContains: [song], forUserWithAccessToken: PlayerController.authToken))
+                SPTRequest.sharedHandler().perform(request) { (error, response, data) in
                     
                     if data != nil {
-                        guard let list = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? [Bool] else {return}
+                        guard let list = (try? JSONSerialization.jsonObject(with: data!, options: .allowFragments)) as? [Bool] else {return}
                         
                         if list.first == true {
                             for newSong in newArrayOfTracks {
-                                if newSong.artists.first?.identifier == song.artists.first?.identifier {
-                                    if let index = newArrayOfTracks.indexOf(newSong){
-                                        newArrayOfTracks.removeAtIndex(index)
+                                if (newSong.artists.first as AnyObject).identifier == (song.artists.first as AnyObject).identifier {
+                                    if let index = newArrayOfTracks.index(of: newSong){
+                                        newArrayOfTracks.remove(at: index)
                                     }
                                 }
                             }
                         }
-                        dispatch_group_leave(matchedSavedArtistsGroup)
+                        matchedSavedArtistsGroup.leave()
                     } else {
-                        completion(newArray: arrayOfTracks)
+                        completion(arrayOfTracks)
                     }
                     
                 }
             }
-            dispatch_group_notify(matchedSavedArtistsGroup, dispatch_get_main_queue()) {
-                completion(newArray: newArrayOfTracks)
+            matchedSavedArtistsGroup.notify(queue: DispatchQueue.main) {
+                completion(newArrayOfTracks)
             }
         } else {
-            completion(newArray: arrayOfTracks)
+            completion(arrayOfTracks)
         }
     }
     
     
     // MARK: Helper Functions
-    func getImageFromURL(imageURL: NSURL, completion: ((image: UIImage) -> Void)?){
-        let data = NSData(contentsOfURL: imageURL)
+    func getImageFromURL(_ imageURL: URL, completion: ((_ image: UIImage) -> Void)?){
+        let data = try? Data(contentsOf: imageURL)
         guard data != nil else {
             print("There doesn't appear to be any image")
             return
@@ -320,7 +320,7 @@ class QueueController {
             print("Could not transfer data into image")
             return
         }
-        completion?(image: image)
+        completion?(image)
     }
     
 }

@@ -14,7 +14,7 @@ class QueueTableViewCell: UITableViewCell {
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var nowPlayingImage: UIImageView!
     
-    func updateCellWithTrack(title: String, artist: String){
+    func updateCellWithTrack(_ title: String, artist: String){
         artistLabel.text = artist
         titleLable.text = title
     }
@@ -25,7 +25,7 @@ class QueueTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
